@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CheckPairs : MonoBehaviour
+public class CheckSelectedTiles : MonoBehaviour
 {
 	public Board board;
 	public List<Tile> firstEvaluationEmptyTiles = new List<Tile>();
@@ -12,13 +12,13 @@ public class CheckPairs : MonoBehaviour
 	enum Evaluation { First, Second, Third }
 	[SerializeField] MatchingLineRenderer Line;
 
-
 	public bool CheckMatchingPairs(Tile firstTile, Tile secondTile)
 	{
 		firstEvaluationEmptyTiles.Clear();
 		secondEvaluationEmptyTiles.Clear();
 		thirdEvaluationEmptyTiles.Clear();
 		linePoints.Clear();
+		
 
 		if (CheckDirections1(firstTile, secondTile, firstEvaluationEmptyTiles, secondTile.transform.position)||
 		CheckDirections2(secondTile, firstTile, firstEvaluationEmptyTiles, secondEvaluationEmptyTiles, firstTile.transform.position)||

@@ -277,7 +277,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 519331538}
-  - component: {fileID: 519331537}
+  - component: {fileID: 519331539}
   m_Layer: 0
   m_Name: PairChecker
   m_TagString: Untagged
@@ -285,24 +285,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &519331537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519331536}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb7c4ab5a0114de44a77f814eeac2cc1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  board: {fileID: 1458085925}
-  firstEvaluationEmptyTiles: []
-  secondEvaluationEmptyTiles: []
-  thirdEvaluationEmptyTiles: []
-  linePoints: []
-  Line: {fileID: 740160437579894191, guid: 8159906fb806095479a22bf257a4ccc9, type: 3}
 --- !u!4 &519331538
 Transform:
   m_ObjectHideFlags: 0
@@ -318,6 +300,24 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &519331539
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519331536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d7ca2475d68a604380330836e31dfb5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  board: {fileID: 1458085925}
+  firstEvaluationEmptyTiles: []
+  secondEvaluationEmptyTiles: []
+  thirdEvaluationEmptyTiles: []
+  linePoints: []
+  Line: {fileID: 740160437579894191, guid: 8159906fb806095479a22bf257a4ccc9, type: 3}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0
@@ -329,9 +329,9 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
-  - component: {fileID: 519420030}
   - component: {fileID: 519420033}
   - component: {fileID: 519420034}
+  - component: {fileID: 519420035}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -347,23 +347,6 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
---- !u!114 &519420030
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7d7ca2475d68a604380330836e31dfb5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  emptyTile: {fileID: 4661586092354329065, guid: 6d77a45d667bff246ace6a87b433472d,
-    type: 3}
-  checkPairs: {fileID: 519331537}
-  board: {fileID: 1458085925}
-  tilePop: {fileID: 114895326075875568, guid: 96af29fad65a01745a35e350cf3310c8, type: 3}
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -489,6 +472,23 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   remainedTiles: 128
+--- !u!114 &519420035
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 32d645f6609b11d40b52a9b90b56fdcb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  emptyTile: {fileID: 4661586092354329065, guid: 6d77a45d667bff246ace6a87b433472d,
+    type: 3}
+  checkSelectedTiles: {fileID: 519331539}
+  board: {fileID: 1458085925}
+  tilePop: {fileID: 114895326075875568, guid: 96af29fad65a01745a35e350cf3310c8, type: 3}
 --- !u!850595691 &543352207
 LightingSettings:
   m_ObjectHideFlags: 0

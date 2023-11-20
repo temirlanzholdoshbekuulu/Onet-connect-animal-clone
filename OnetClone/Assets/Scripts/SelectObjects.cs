@@ -7,7 +7,7 @@ public class SelectObjects : MonoBehaviour
 {
     public static SelectObjects current;
     [SerializeField] Transform emptyTile;
-    [SerializeField] CheckPairs checkPairs;
+    [SerializeField] CheckSelectedTiles checkSelectedTiles;
     [SerializeField] Board board;
     [SerializeField] PopingTile tilePop;
     private GameObject selectedTile1;
@@ -62,8 +62,8 @@ public class SelectObjects : MonoBehaviour
             selectedTile2.GetComponent<SpriteRenderer>().material.color -= new Color(0, 0, 0, 0.3f);
             if(selectedTile1.GetComponent<Tile>().name == selectedTile2.GetComponent<Tile>().name)
             {
-                checkPairs.board = GameObject.FindObjectOfType<Board>().GetComponent<Board>();
-                if (checkPairs.CheckMatchingPairs(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == true)
+                checkSelectedTiles.board = GameObject.FindObjectOfType<Board>().GetComponent<Board>();
+                if (checkSelectedTiles.CheckMatchingPairs(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == true)
                 {
                     GameObject firstTilePop = Instantiate(tilePop.gameObject,selectedTile1.transform.position,Quaternion.identity);
                     firstTilePop.GetComponent<SpriteRenderer>().sprite = selectedTile1.GetComponent<SpriteRenderer>().sprite;
@@ -73,10 +73,10 @@ public class SelectObjects : MonoBehaviour
                     selectedTile2.GetComponent<Tile>().MakeEmpty();
                     selectedTile1 = null;
                     selectedTile2 = null;
-                    checkPairs.board = board;
+                    checkSelectedTiles.board = board;
                     TilesMatch();
                 }
-                else if(checkPairs.CheckMatchingPairs(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == false)
+                else if(checkSelectedTiles.CheckMatchingPairs(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == false)
                 {
                     selectedTile1.GetComponent<SpriteRenderer>().material.color += new Color(0, 0, 0,0.3f);
                     selectedTile1 = selectedTile2;

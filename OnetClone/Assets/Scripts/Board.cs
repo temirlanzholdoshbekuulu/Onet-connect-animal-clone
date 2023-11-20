@@ -8,7 +8,7 @@ public class Board : MonoBehaviour
     public int gridWidth;
     [SerializeField] Transform[] tilePrefabs;
     [SerializeField] Transform emptyTilePrefab;
-    [SerializeField] CheckPairs checkPairsClass;
+    [SerializeField] CheckSelectedTiles checkPairsClass;
     public Tile[,] tiles;
     public List<Transform> availableTiles = new List<Transform>();
     public int tilesCount;
