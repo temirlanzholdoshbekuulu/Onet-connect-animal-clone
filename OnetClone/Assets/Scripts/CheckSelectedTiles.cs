@@ -4,40 +4,36 @@ using UnityEngine;
 
 public class CheckSelectedTiles : MonoBehaviour
 {
-	public Board board;
+	public LevelManager board;
 	public List<Tile> firstEvaluationEmptyTiles = new List<Tile>();
 	public List<Tile> secondEvaluationEmptyTiles = new List<Tile>();
 	public List<Tile> thirdEvaluationEmptyTiles = new List<Tile>();
 	public List<Vector3> linePoints;
-	enum Evaluation { First, Second, Third }
 	[SerializeField] MatchingLineRenderer Line;
 
-	public bool CheckMatchingPairs(Tile firstTile, Tile secondTile)
+	public bool CheckMatchingPairs(Tile selectedTile1, Tile selectedTile2)
 	{
 		firstEvaluationEmptyTiles.Clear();
 		secondEvaluationEmptyTiles.Clear();
 		thirdEvaluationEmptyTiles.Clear();
 		linePoints.Clear();
 		
-
-		if (CheckDirections1(firstTile, secondTile, firstEvaluationEmptyTiles, secondTile.transform.position)||
-		CheckDirections2(secondTile, firstTile, firstEvaluationEmptyTiles, secondEvaluationEmptyTiles, firstTile.transform.position)||
-		CheckDirections3(firstEvaluationEmptyTiles, secondEvaluationEmptyTiles,firstTile.transform.position,secondTile.transform.position))
+		if (CheckDirections1(selectedTile1, selectedTile2, firstEvaluationEmptyTiles, selectedTile2.transform.position)||
+		CheckDirections2(selectedTile2, selectedTile1, firstEvaluationEmptyTiles, secondEvaluationEmptyTiles, selectedTile1.transform.position)||
+		CheckDirections3(firstEvaluationEmptyTiles, secondEvaluationEmptyTiles,selectedTile1.transform.position,selectedTile2.transform.position))
 		{
 			return true;
 		}
 		else return false;
 	}
-	
 	bool CheckDirections1(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, Vector3 secondTilePos)
 	{
 		int x = (int)firstTile.transform.position.x;
 		int y = (int)firstTile.transform.position.y;
-
+		
 		for (int i = x + 1; i < board.gridWidth; i++)
 		{
-			if (board.tiles[i, y].transform.position.x == secondTile.transform.position.x
-			&& board.tiles[i, y].transform.position.y == secondTile.transform.position.y)
+			if (board.tiles[i, y].transform.position.x == secondTile.transform.position.x && board.tiles[i, y].transform.position.y == secondTile.transform.position.y)
 			{
 				DrawLine(firstTile.transform.position,secondTile.transform.position);
 				return true;
@@ -53,8 +49,7 @@ public class CheckSelectedTiles : MonoBehaviour
 		}
 		for (int i = x - 1; i > -1; i--)
 		{
-			if (board.tiles[i, y].transform.position.x == secondTile.transform.position.x
-			&& board.tiles[i, y].transform.position.y == secondTile.transform.position.y)
+			if (board.tiles[i, y].transform.position.x == secondTile.transform.position.x && board.tiles[i, y].transform.position.y == secondTile.transform.position.y)
 			{
 				DrawLine(firstTile.transform.position,secondTile.transform.position);
 				return true;
@@ -70,8 +65,7 @@ public class CheckSelectedTiles : MonoBehaviour
 		}
 		for (int i = y + 1; i < board.gridHeight; i++)
 		{
-			if (board.tiles[x, i].transform.position.x == secondTile.transform.position.x
-			&& board.tiles[x, i].transform.position.y == secondTile.transform.position.y)
+			if (board.tiles[x, i].transform.position.x == secondTile.transform.position.x && board.tiles[x, i].transform.position.y == secondTile.transform.position.y)
 			{
 				DrawLine(firstTile.transform.position,secondTile.transform.position);
 				return true;
@@ -87,8 +81,7 @@ public class CheckSelectedTiles : MonoBehaviour
 		}
 		for (int i = y - 1; i > -1; i--)
 		{
-			if (board.tiles[x, i].transform.position.x == secondTile.transform.position.x
-			&& board.tiles[x, i].transform.position.y == secondTile.transform.position.y)
+			if (board.tiles[x, i].transform.position.x == secondTile.transform.position.x && board.tiles[x, i].transform.position.y == secondTile.transform.position.y)
 			{
 				DrawLine(firstTile.transform.position,secondTile.transform.position);
 				return true;
@@ -179,7 +172,6 @@ public class CheckSelectedTiles : MonoBehaviour
 		}
 		return false;
 	}
-
 	bool CheckDirections3(List<Tile> firstList, List<Tile> secondList,Vector3 firstTilePos, Vector3 secondTilePos)
 	{
 		foreach (Tile tile in firstList)
