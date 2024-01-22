@@ -7,7 +7,6 @@ public class CheckSelectedTiles : MonoBehaviour
 	public LevelManager board;
 	public List<Tile> firstEvaluationEmptyTiles = new List<Tile>();
 	public List<Tile> secondEvaluationEmptyTiles = new List<Tile>();
-	public List<Tile> thirdEvaluationEmptyTiles = new List<Tile>();
 	public List<Vector3> linePoints;
 	[SerializeField] MatchingLineRenderer Line;
 
@@ -15,7 +14,6 @@ public class CheckSelectedTiles : MonoBehaviour
 	{
 		firstEvaluationEmptyTiles.Clear();
 		secondEvaluationEmptyTiles.Clear();
-		thirdEvaluationEmptyTiles.Clear();
 		linePoints.Clear();
 		
 		if (CheckDirections1(selectedTile1, selectedTile2, firstEvaluationEmptyTiles, selectedTile2.transform.position)||
@@ -192,10 +190,6 @@ public class CheckSelectedTiles : MonoBehaviour
 				{
 					break;
 				}
-				else
-				{
-					thirdEvaluationEmptyTiles.Add(board.tiles[i, y]);
-				}
 			}
 			for (int i = x - 1; i > -1; i--)
 			{
@@ -209,10 +203,6 @@ public class CheckSelectedTiles : MonoBehaviour
 				else if (board.tiles[i, y].isEmpty != true)
 				{
 					break;
-				}
-				else
-				{
-					thirdEvaluationEmptyTiles.Add(board.tiles[i, y]);
 				}
 			}
 			for (int i = y + 1; i < board.gridHeight; i++)
@@ -228,10 +218,6 @@ public class CheckSelectedTiles : MonoBehaviour
 				{
 					break;
 				}
-				else
-				{
-					thirdEvaluationEmptyTiles.Add(board.tiles[x, i]);
-				}
 			}
 			for (int i = y - 1; i > -1; i--)
 			{
@@ -245,10 +231,6 @@ public class CheckSelectedTiles : MonoBehaviour
 				else if (board.tiles[x, i].isEmpty != true)
 				{
 					break;
-				}
-				else
-				{
-					thirdEvaluationEmptyTiles.Add(board.tiles[x, i]);
 				}
 			}
 		}

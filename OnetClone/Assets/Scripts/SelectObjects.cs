@@ -13,15 +13,10 @@ public class SelectObjects : MonoBehaviour
     private GameObject selectedTile1;
     private GameObject selectedTile2;
     
-    private void Awake() 
+    void Awake() 
     {
         current = this;    
     }
-    void Start() 
-    {
-
-    }
-
     void Update()
     {
         if (Input.GetMouseButtonDown(0))
@@ -83,7 +78,6 @@ public class SelectObjects : MonoBehaviour
                     selectedTile2 = null;
 
                 }
-
             }
             else
             {
