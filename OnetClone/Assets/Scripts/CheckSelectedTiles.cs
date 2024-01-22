@@ -16,219 +16,107 @@ public class CheckSelectedTiles : MonoBehaviour
 		secondEvaluationEmptyTiles.Clear();
 		linePoints.Clear();
 		
-		if (CheckDirections1(selectedTile1, selectedTile2, firstEvaluationEmptyTiles, selectedTile2.transform.position)||
-		CheckDirections2(selectedTile2, selectedTile1, firstEvaluationEmptyTiles, secondEvaluationEmptyTiles, selectedTile1.transform.position)||
-		CheckDirections3(firstEvaluationEmptyTiles, secondEvaluationEmptyTiles,selectedTile1.transform.position,selectedTile2.transform.position))
+		if (Evaluation1(selectedTile1, selectedTile2, firstEvaluationEmptyTiles, selectedTile2.transform.position)||
+		Evaluation2(selectedTile2, selectedTile1, firstEvaluationEmptyTiles, secondEvaluationEmptyTiles, selectedTile1.transform.position)||
+		Evaluation3(firstEvaluationEmptyTiles, secondEvaluationEmptyTiles,selectedTile1.transform.position,selectedTile2.transform.position))
 		{
 			return true;
 		}
 		else return false;
 	}
-	bool CheckDirections1(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, Vector3 secondTilePos)
+	bool Evaluation1(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, Vector3 secondTilePos)
 	{
-		int x = (int)firstTile.transform.position.x;
-		int y = (int)firstTile.transform.position.y;
-		
-		for (int i = x + 1; i < board.gridWidth; i++)
-		{
-			if (board.tiles[i, y].transform.position.x == secondTile.transform.position.x && board.tiles[i, y].transform.position.y == secondTile.transform.position.y)
-			{
-				DrawLine(firstTile.transform.position,secondTile.transform.position);
-				return true;
-			}
-			else if (board.tiles[i, y].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				EmptyTiles.Add(board.tiles[i, y]);
-			}
-		}
-		for (int i = x - 1; i > -1; i--)
-		{
-			if (board.tiles[i, y].transform.position.x == secondTile.transform.position.x && board.tiles[i, y].transform.position.y == secondTile.transform.position.y)
-			{
-				DrawLine(firstTile.transform.position,secondTile.transform.position);
-				return true;
-			}
-			else if (board.tiles[i, y].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				EmptyTiles.Add(board.tiles[i, y]);
-			}
-		}
-		for (int i = y + 1; i < board.gridHeight; i++)
-		{
-			if (board.tiles[x, i].transform.position.x == secondTile.transform.position.x && board.tiles[x, i].transform.position.y == secondTile.transform.position.y)
-			{
-				DrawLine(firstTile.transform.position,secondTile.transform.position);
-				return true;
-			}
-			else if (board.tiles[x, i].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				EmptyTiles.Add(board.tiles[x, i]);
-			}
-		}
-		for (int i = y - 1; i > -1; i--)
-		{
-			if (board.tiles[x, i].transform.position.x == secondTile.transform.position.x && board.tiles[x, i].transform.position.y == secondTile.transform.position.y)
-			{
-				DrawLine(firstTile.transform.position,secondTile.transform.position);
-				return true;
-			}
-			else if (board.tiles[x, i].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				EmptyTiles.Add(board.tiles[x, i]);
-			}
-		}
+		if (CheckDirection1(firstTile, secondTile, EmptyTiles, 1, 0)) return true;  // right
+		if (CheckDirection1(firstTile, secondTile, EmptyTiles, -1, 0)) return true; // left
+		if (CheckDirection1(firstTile, secondTile, EmptyTiles, 0, 1)) return true;  // up
+		if (CheckDirection1(firstTile, secondTile, EmptyTiles, 0, -1)) return true; // down
+
 		return false;
 	}
-	bool CheckDirections2(Tile firstTile, Tile secondTile, List<Tile> firstList, List<Tile> EmptyTiles, Vector3 firstTilePos)
+	bool Evaluation2(Tile firstTile, Tile secondTile, List<Tile> firstList, List<Tile> EmptyTiles, Vector3 firstTilePos)
+	{
+		if (CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 1, 0)) return true;  // right
+		if (CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, -1, 0)) return true; // left
+		if (CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, 1)) return true;  // up
+		if (CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, -1)) return true; // down
+
+		return false;
+	}
+	bool Evaluation3(List<Tile> firstList, List<Tile> secondList, Vector3 firstTilePos, Vector3 secondTilePos)
+	{
+		if (CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 1, 0)) return true;  // right
+		if (CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, -1, 0)) return true; // left
+		if (CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, 1)) return true;  // up
+		if (CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, -1)) return true; // down
+
+		return false;
+	}
+	bool CheckDirection1(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, int dx, int dy)
 	{
 		int x = (int)firstTile.transform.position.x;
 		int y = (int)firstTile.transform.position.y;
 
-		for (int i = x + 1; i < board.gridWidth; i++)
+		for (int i = x + dx, j = y + dy; i >= 0 && i < board.gridWidth && j >= 0 && j < board.gridHeight; i += dx, j += dy)
 		{
-			if (firstList.Contains(board.tiles[i, y]))
+			if (board.tiles[i, j].transform.position.x == secondTile.transform.position.x && board.tiles[i, j].transform.position.y == secondTile.transform.position.y)
 			{
-				DrawLine(firstTile.transform.position,board.tiles[i,y].transform.position);
-				DrawLine(board.tiles[i,y].transform.position,secondTile.transform.position);
+				DrawLine(firstTile.transform.position,secondTile.transform.position);
 				return true;
 			}
-			else if (board.tiles[i, y].isEmpty != true)
+			else if (board.tiles[i, j].isEmpty != true)
 			{
 				break;
 			}
 			else
 			{
-				EmptyTiles.Add(board.tiles[i, y]);
-			}
-		}
-		for (int i = x - 1; i > -1; i--)
-		{
-			if (firstList.Contains(board.tiles[i, y]))
-			{
-				DrawLine(firstTile.transform.position,board.tiles[i,y].transform.position);
-				DrawLine(board.tiles[i,y].transform.position,secondTile.transform.position);
-				return true;
-			}
-			else if (board.tiles[i, y].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				EmptyTiles.Add(board.tiles[i, y]);
-			}
-		}
-		for (int i = y + 1; i < board.gridHeight; i++)
-		{
-			if (firstList.Contains(board.tiles[x, i]))
-			{
-				DrawLine(firstTile.transform.position,board.tiles[x,i].transform.position);
-				DrawLine(board.tiles[x,i].transform.position,secondTile.transform.position);
-				return true;
-			}
-			else if (board.tiles[x, i].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				EmptyTiles.Add(board.tiles[x, i]);
-			}
-		}
-		for (int i = y - 1; i > -1; i--)
-		{
-			if (firstList.Contains(board.tiles[x, i]))
-			{
-				DrawLine(firstTile.transform.position,board.tiles[x,i].transform.position);
-				DrawLine(board.tiles[x,i].transform.position,secondTile.transform.position);
-				return true;
-			}
-			else if (board.tiles[x, i].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				EmptyTiles.Add(board.tiles[x, i]);
+				EmptyTiles.Add(board.tiles[i, j]);
 			}
 		}
 		return false;
 	}
-	bool CheckDirections3(List<Tile> firstList, List<Tile> secondList,Vector3 firstTilePos, Vector3 secondTilePos)
+
+	bool CheckDirection2(Tile firstTile, Tile secondTile, List<Tile> firstList, List<Tile> EmptyTiles, int dx, int dy)
+	{
+		int x = (int)firstTile.transform.position.x;
+		int y = (int)firstTile.transform.position.y;
+
+		for (int i = x + dx, j = y + dy; i >= 0 && i < board.gridWidth && j >= 0 && j < board.gridHeight; i += dx, j += dy)
+		{
+			if (firstList.Contains(board.tiles[i, j]))
+			{
+				DrawLine(firstTile.transform.position, board.tiles[i, j].transform.position);
+				DrawLine(board.tiles[i, j].transform.position, secondTile.transform.position);
+				return true;
+			}
+			else if (board.tiles[i, j].isEmpty != true)
+			{
+				break;
+			}
+			else
+			{
+				EmptyTiles.Add(board.tiles[i, j]);
+			}
+		}
+		return false;
+	}
+
+	bool CheckDirection3(List<Tile> firstList, List<Tile> secondList, Vector3 firstTilePos, Vector3 secondTilePos, int dx, int dy)
 	{
 		foreach (Tile tile in firstList)
 		{
 			int x = (int)tile.transform.position.x;
 			int y = (int)tile.transform.position.y;
 
-			for (int i = x + 1; i < board.gridWidth; i++)
+			for (int i = x + dx, j = y + dy; i >= 0 && i < board.gridWidth && j >= 0 && j < board.gridHeight; i += dx, j += dy)
 			{
-				if (secondList.Contains(board.tiles[i, y]))
+				if (secondList.Contains(board.tiles[i, j]))
 				{
-					DrawLine(firstTilePos,tile.transform.position);
-					DrawLine(tile.transform.position,board.tiles[i,y].transform.position);
-					DrawLine(board.tiles[i,y].transform.position,secondTilePos);
+					DrawLine(firstTilePos, tile.transform.position);
+					DrawLine(tile.transform.position, board.tiles[i, j].transform.position);
+					DrawLine(board.tiles[i, j].transform.position, secondTilePos);
 					return true;
 				}
-				else if (board.tiles[i, y].isEmpty != true)
-				{
-					break;
-				}
-			}
-			for (int i = x - 1; i > -1; i--)
-			{
-				if (secondList.Contains(board.tiles[i, y]))
-				{
-					DrawLine(firstTilePos,tile.transform.position);
-					DrawLine(tile.transform.position,board.tiles[i,y].transform.position);
-					DrawLine(board.tiles[i,y].transform.position,secondTilePos);
-					return true;
-				}
-				else if (board.tiles[i, y].isEmpty != true)
-				{
-					break;
-				}
-			}
-			for (int i = y + 1; i < board.gridHeight; i++)
-			{
-				if (secondList.Contains(board.tiles[x, i]))
-				{
-					DrawLine(firstTilePos,tile.transform.position);
-					DrawLine(tile.transform.position,board.tiles[x,i].transform.position);
-					DrawLine(board.tiles[x,i].transform.position,secondTilePos);
-					return true;
-				}
-				else if (board.tiles[x, i].isEmpty != true)
-				{
-					break;
-				}
-			}
-			for (int i = y - 1; i > -1; i--)
-			{
-				if (secondList.Contains(board.tiles[x, i]))
-				{
-					DrawLine(firstTilePos,tile.transform.position);
-					DrawLine(tile.transform.position,board.tiles[x,i].transform.position);
-					DrawLine(board.tiles[x,i].transform.position,secondTilePos);
-					return true;
-				}
-				else if (board.tiles[x, i].isEmpty != true)
+				else if (board.tiles[i, j].isEmpty != true)
 				{
 					break;
 				}
@@ -236,6 +124,7 @@ public class CheckSelectedTiles : MonoBehaviour
 		}
 		return false;
 	}
+
 	void DrawLine(Vector3 startPoint,Vector3 endPoint)
 	{
 		var lineInstance = Instantiate(Line,Vector3.zero,Quaternion.identity);
