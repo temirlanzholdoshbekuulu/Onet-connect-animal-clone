@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MatchingLineRenderer : MonoBehaviour
 {
-	[SerializeField] float jitterAmount;
+	[SerializeField] private GameObject pointDotPrefab;
 	private LineRenderer lineRenderer;
 	public Vector3 startPoint;
 	public Vector3 endPoint;
@@ -17,8 +17,10 @@ public class MatchingLineRenderer : MonoBehaviour
 		Vector3 direction = (endPoint - startPoint).normalized;
 
 		lineRenderer.positionCount = 2;
-
 		lineRenderer.SetPosition(0, startPoint);
 		lineRenderer.SetPosition(1, endPoint);
+		
+		Instantiate(pointDotPrefab,startPoint,Quaternion.identity,gameObject.transform);		
+		Instantiate(pointDotPrefab,endPoint,Quaternion.identity,gameObject.transform);		
 	}
 }
