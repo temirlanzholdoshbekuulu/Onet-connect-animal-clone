@@ -449,7 +449,6 @@ MonoBehaviour:
   board: {fileID: 1458085925}
   firstEvaluationEmptyTiles: []
   secondEvaluationEmptyTiles: []
-  thirdEvaluationEmptyTiles: []
   linePoints: []
   Line: {fileID: 740160437579894191, guid: 8159906fb806095479a22bf257a4ccc9, type: 3}
 --- !u!1 &519420028
