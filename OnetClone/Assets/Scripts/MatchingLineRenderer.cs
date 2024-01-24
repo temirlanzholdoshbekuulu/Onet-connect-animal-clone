@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Video;
 
 public class MatchingLineRenderer : MonoBehaviour
 {
@@ -11,6 +12,10 @@ public class MatchingLineRenderer : MonoBehaviour
 
 	void Start()
 	{
+		RenderLine(startPoint,endPoint);
+	}
+	void RenderLine(Vector3 startPoint,Vector3 endPoint)
+	{
 		lineRenderer = GetComponent<LineRenderer>();
 		Destroy(gameObject, 0.3f);
 
@@ -19,7 +24,7 @@ public class MatchingLineRenderer : MonoBehaviour
 		lineRenderer.positionCount = 2;
 		lineRenderer.SetPosition(0, startPoint);
 		lineRenderer.SetPosition(1, endPoint);
-		
+
 		Instantiate(pointDotPrefab,startPoint,Quaternion.identity,gameObject.transform);		
 		Instantiate(pointDotPrefab,endPoint,Quaternion.identity,gameObject.transform);		
 	}
