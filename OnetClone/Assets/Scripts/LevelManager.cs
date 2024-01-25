@@ -13,24 +13,25 @@ public class LevelManager : MonoBehaviour
 	public List<Transform> availableTiles = new List<Transform>();
 	public int tilesCount;
 
+	private const float MoveSpeed = 1500f;
+	private const int DuplicateTimes = 4;
+
 	void Start()
 	{
-		StartCoroutine("SpawnGrid"); 
+		StartCoroutine(SpawnGrid()); 
 	}
-	void Update() 
-	{
-		
-	}
+
 	void DuplicateTiles()
 	{
 		foreach (Transform tilePrefab in tilePrefabs)
 		{
-			for (int i = 0; i < 4; i++)
+			for (int i = 0; i < DuplicateTimes; i++)
 			{
 				availableTiles.Add(tilePrefab);
 			}
 		}
 	}
+
 	public IEnumerator SpawnGrid()
 	{
 		tiles = new Tile[gridWidth, gridHeight];
@@ -39,29 +40,33 @@ public class LevelManager : MonoBehaviour
 		{
 			for (int y = 0; y < gridHeight; y++)
 			{
-				tilesCount ++;
+				tilesCount++;
 				Tile tile = IsOnBorder(x, y) ? emptyTilePrefab.GetComponent<Tile>() : SelectRandomTile();
-				tiles[x, y] = Instantiate(tile, new Vector3(11, 18, 0), Quaternion.identity, gameObject.transform);
-				if(!IsOnBorder(x,y))
+				tiles[x, y] = Instantiate(tile, new Vector3(x, y, 0), Quaternion.identity, gameObject.transform);
+				if (!IsOnBorder(x, y))
 				{
-					while(!Mathf.Approximately((tiles[x,y].transform.position - new Vector3(x,y,0)).sqrMagnitude,0))
-					{
-						tiles[x,y].transform.position = Vector3.MoveTowards(tiles[x,y].transform.position,new Vector3(x,y,0),1500* Time.deltaTime);
-						yield return null;
-					}
+					yield return MoveTileToPosition(tiles[x, y], new Vector3(x, y, 0));
 				}
 				else
 				{
-					tiles[x,y].transform.position = new Vector3(x,y,0);
+					tiles[x, y].transform.position = new Vector3(x, y, 0);
 				}
-
 			}
+		}
+	}
+
+	IEnumerator MoveTileToPosition(Tile tile, Vector3 targetPosition)
+	{
+		while (!Mathf.Approximately((tile.transform.position - targetPosition).sqrMagnitude, 0))
+		{
+			tile.transform.position = Vector3.MoveTowards(tile.transform.position, targetPosition, MoveSpeed * Time.deltaTime);
+			yield return null;
 		}
 	}
 
 	bool IsOnBorder(int x, int y)
 	{
-		return x == 0 || x == gridWidth-1 || y == 0 || y == gridHeight -1;
+		return x == 0 || x == gridWidth - 1 || y == 0 || y == gridHeight - 1;
 	}
 
 	Tile SelectRandomTile()
@@ -71,5 +76,4 @@ public class LevelManager : MonoBehaviour
 		availableTiles.RemoveAt(randomTileIndex);
 		return randomTile;
 	}
-	
 }
