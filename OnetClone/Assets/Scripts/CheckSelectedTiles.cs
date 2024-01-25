@@ -16,33 +16,33 @@ public class CheckSelectedTiles : MonoBehaviour
 		secondEvaluationEmptyTiles.Clear();
 		linePoints.Clear();
 		
-		if (Evaluation1(selectedTile1, selectedTile2, firstEvaluationEmptyTiles, selectedTile2.transform.position)||
-		Evaluation2(selectedTile2, selectedTile1, firstEvaluationEmptyTiles, secondEvaluationEmptyTiles, selectedTile1.transform.position)||
-		Evaluation3(firstEvaluationEmptyTiles, secondEvaluationEmptyTiles,selectedTile1.transform.position,selectedTile2.transform.position))
+		if (CheckStraightLine(selectedTile1, selectedTile2, firstEvaluationEmptyTiles, selectedTile2.transform.position)||
+		CheckOneBendLine(selectedTile2, selectedTile1, firstEvaluationEmptyTiles, secondEvaluationEmptyTiles, selectedTile1.transform.position)||
+		CheckTwoBendsLine(firstEvaluationEmptyTiles, secondEvaluationEmptyTiles,selectedTile1.transform.position,selectedTile2.transform.position))
 		{
 			return true;
 		}
 		else return false;
 	}
-	bool Evaluation1(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, Vector3 secondTilePos)
+	bool CheckStraightLine(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, Vector3 secondTilePos)
 	{
 		return 	CheckDirection1(firstTile, secondTile, EmptyTiles, 1, 0) ||
 				CheckDirection1(firstTile, secondTile, EmptyTiles, -1, 0)||
 				CheckDirection1(firstTile, secondTile, EmptyTiles, 0, 1) ||
 				CheckDirection1(firstTile, secondTile, EmptyTiles, 0, -1);
 	}
-	bool Evaluation2(Tile firstTile, Tile secondTile, List<Tile> firstList, List<Tile> EmptyTiles, Vector3 firstTilePos)
+	bool CheckOneBendLine(Tile firstTile, Tile secondTile, List<Tile> firstList, List<Tile> EmptyTiles, Vector3 firstTilePos)
 	{
 		return 	CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 1, 0) ||
 				CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, -1, 0)||
-				CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, 1)||
+				CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, 1) ||
 				CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, -1);
 	}
-	bool Evaluation3(List<Tile> firstList, List<Tile> secondList, Vector3 firstTilePos, Vector3 secondTilePos)
+	bool CheckTwoBendsLine(List<Tile> firstList, List<Tile> secondList, Vector3 firstTilePos, Vector3 secondTilePos)
 	{
-		return 	CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 1, 0)||
+		return 	CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 1, 0) ||
 				CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, -1, 0)||
-				CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, 1)||
+				CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, 1) ||
 				CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, -1);
 	}
 	bool CheckDirection1(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, int dx, int dy)
