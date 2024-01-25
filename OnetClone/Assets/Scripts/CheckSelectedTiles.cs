@@ -33,21 +33,17 @@ public class CheckSelectedTiles : MonoBehaviour
 	}
 	bool CheckOneBendLine(Tile firstTile, Tile secondTile, List<Tile> firstList, List<Tile> EmptyTiles, Vector3 firstTilePos)
 	{
-		if (CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 1, 0)) return true;  // right
-		if (CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, -1, 0)) return true; // left
-		if (CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, 1)) return true;  // up
-		if (CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, -1)) return true; // down
-
-		return false;
+		return 	CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 1, 0) ||
+				CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, -1, 0)||
+				CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, 1) ||
+				CheckDirection2(firstTile, secondTile, firstList, EmptyTiles, 0, -1);
 	}
 	bool CheckTwoBendsLine(List<Tile> firstList, List<Tile> secondList, Vector3 firstTilePos, Vector3 secondTilePos)
 	{
-		if (CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 1, 0)) return true;  // right
-		if (CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, -1, 0)) return true; // left
-		if (CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, 1)) return true;  // up
-		if (CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, -1)) return true; // down
-
-		return false;
+		return 	CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 1, 0) ||	
+				CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, -1, 0)||
+				CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, 1) ||
+				CheckDirection3(firstList, secondList, firstTilePos, secondTilePos, 0, -1);
 	}
 	bool CheckDirection1(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, int dx, int dy)
 	{
