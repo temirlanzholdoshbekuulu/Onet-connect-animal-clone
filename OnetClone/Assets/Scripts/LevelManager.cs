@@ -21,16 +21,6 @@ public class LevelManager : MonoBehaviour
 	{
 		
 	}
-	void DuplicateTiles()
-	{
-		foreach (Transform tilePrefab in tilePrefabs)
-		{
-			for (int i = 0; i < 4; i++)
-			{
-				availableTiles.Add(tilePrefab);
-			}
-		}
-	}
 	public IEnumerator SpawnGrid()
 	{
 		tiles = new Tile[gridWidth, gridHeight];
@@ -58,7 +48,16 @@ public class LevelManager : MonoBehaviour
 			}
 		}
 	}
-
+	void DuplicateTiles()
+	{
+		foreach (Transform tilePrefab in tilePrefabs)
+		{
+			for (int i = 0; i < 4; i++)
+			{
+				availableTiles.Add(tilePrefab);
+			}
+		}
+	}
 	bool IsOnBorder(int x, int y)
 	{
 		return x == 0 || x == gridWidth-1 || y == 0 || y == gridHeight -1;
