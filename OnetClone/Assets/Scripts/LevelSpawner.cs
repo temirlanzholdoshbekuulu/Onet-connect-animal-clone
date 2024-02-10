@@ -1,27 +1,32 @@
-﻿using System.Collections;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class LevelManager : MonoBehaviour
+public class LevelSpawner : MonoBehaviour
 {
 	public int gridHeight;
 	public int gridWidth;
 	[SerializeField] Transform[] tilePrefabs;
 	[SerializeField] Transform emptyTilePrefab;
 	[SerializeField] CheckSelectedTiles checkPairsClass;
+	[SerializeField] GameManager gameManager;
 	public Tile[,] tiles;
 	public List<Transform> availableTiles = new List<Transform>();
 	public int tilesCount;
 
 	void Start()
 	{
-		StartCoroutine("SpawnGrid"); 
+		
 	}
 	void Update() 
 	{
 		
 	}
-	public IEnumerator SpawnGrid()
+	public void CallSpawnGrid()
+	{
+		StartCoroutine("SpawnGrid");		
+	}
+	private IEnumerator SpawnGrid()
 	{
 		tiles = new Tile[gridWidth, gridHeight];
 		DuplicateTiles();

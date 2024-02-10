@@ -8,7 +8,7 @@ public class SelectObjects : MonoBehaviour
     public static SelectObjects current;
     [SerializeField] Transform emptyTile;
     [SerializeField] CheckSelectedTiles checkSelectedTiles;
-    [SerializeField] LevelManager board;
+    [SerializeField] LevelSpawner board;
     [SerializeField] PopingTile tilePop;
     private GameObject selectedTile1;
     private GameObject selectedTile2;
@@ -57,7 +57,7 @@ public class SelectObjects : MonoBehaviour
             selectedTile2.GetComponent<SpriteRenderer>().material.color -= new Color(0, 0, 0, 0.3f);
             if(selectedTile1.GetComponent<Tile>().name == selectedTile2.GetComponent<Tile>().name)
             {
-                checkSelectedTiles.board = GameObject.FindObjectOfType<LevelManager>().GetComponent<LevelManager>();
+                checkSelectedTiles.board = GameObject.FindObjectOfType<LevelSpawner>().GetComponent<LevelSpawner>();
                 if (checkSelectedTiles.CheckMatchingPairs(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == true)
                 {
                     GameObject firstTilePop = Instantiate(tilePop.gameObject,selectedTile1.transform.position,Quaternion.identity);

@@ -19,7 +19,7 @@ public class GameUI : MonoBehaviour
 	{
 		
 	}
-	void ShowWinScreen()
+	public void ShowWinScreen()
 	{
 		WinScreen.SetActive(true);
 	}

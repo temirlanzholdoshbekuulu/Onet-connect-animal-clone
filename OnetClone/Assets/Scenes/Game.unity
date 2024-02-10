@@ -463,7 +463,6 @@ GameObject:
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
   - component: {fileID: 519420033}
-  - component: {fileID: 519420034}
   - component: {fileID: 519420035}
   m_Layer: 0
   m_Name: Main Camera
@@ -592,19 +591,6 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
---- !u!114 &519420034
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 519420028}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5de6b39a6b150f947802856d76359ceb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  remainedTiles: 128
 --- !u!114 &519420035
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -844,13 +830,13 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: 
+      - m_Target: {fileID: 1917702540}
+        m_TargetAssemblyTypeName: WinScreen, Assembly-CSharp
+        m_MethodName: NextLevel
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: 
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
           m_IntArgument: 0
           m_FloatArgument: 0
           m_StringArgument: 
@@ -961,6 +947,7 @@ MonoBehaviour:
   emptyTilePrefab: {fileID: 4661586092354329065, guid: 6d77a45d667bff246ace6a87b433472d,
     type: 3}
   checkPairsClass: {fileID: 0}
+  gameManager: {fileID: 1654888772}
   availableTiles: []
   tilesCount: 0
 --- !u!4 &1458085926
@@ -1242,7 +1229,7 @@ GameObject:
   - component: {fileID: 1603855205}
   - component: {fileID: 1603855207}
   m_Layer: 5
-  m_Name: Panel
+  m_Name: TimerFill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1317,6 +1304,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4062ef4e762c3ef49993a6d435d060b6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1654888771
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1654888773}
+  - component: {fileID: 1654888772}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1654888772
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654888771}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5de6b39a6b150f947802856d76359ceb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  remainedTiles: 0
+  level: 1
+  levelSpawner: {fileID: 1458085925}
+  gameUI: {fileID: 1592951918}
+--- !u!4 &1654888773
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1654888771}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1762370780
 GameObject:
   m_ObjectHideFlags: 0
@@ -1673,6 +1708,7 @@ GameObject:
   - component: {fileID: 1917702537}
   - component: {fileID: 1917702539}
   - component: {fileID: 1917702538}
+  - component: {fileID: 1917702540}
   m_Layer: 5
   m_Name: WinPanel
   m_TagString: Untagged
@@ -1740,6 +1776,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1917702536}
   m_CullTransparentMesh: 1
+--- !u!114 &1917702540
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1917702536}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d68cfaa23e9174eb76af8d1287f7f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  levelManager: {fileID: 1458085925}
+  timer: {fileID: 1603855207}
+  gameManager: {fileID: 1654888772}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1749,3 +1800,4 @@ SceneRoots:
   - {fileID: 1458085926}
   - {fileID: 519331538}
   - {fileID: 110588351}
+  - {fileID: 1654888773}

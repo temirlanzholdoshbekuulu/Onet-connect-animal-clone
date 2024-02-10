@@ -6,23 +6,40 @@ using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
-	public int remainedTiles = 128;
-	public static Action OnWin;
+	public static GameManager Instance {get;private set;}
+	public int remainedTiles =0;
+	public int currentLevel = 0;
+	public static event Action OnWin;
+	[SerializeField] LevelSpawner levelSpawner;
 	
-	void Start()
+	void Awake()
 	{
-		
+		StartNewLevel();
+		if(Instance==null)
+		{
+			Instance=this;
+			DontDestroyOnLoad(transform.gameObject);			
+		}
+		else
+		{
+			Destroy(gameObject);
+		}
+		levelSpawner.CallSpawnGrid();
 	}
-
+	public void StartNewLevel()
+	{
+		remainedTiles = 128;
+		currentLevel++;
+	}
 	void Update()
 	{
 		if(remainedTiles == 0)
 		{
 			OnWin();
-			Debug.Log("Win!");
 		}
 		if(Input.GetKey(KeyCode.Space))
 		{
+			remainedTiles = 128;
 			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		}
 	}

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CheckSelectedTiles : MonoBehaviour
 {
-	public LevelManager board;
+	public LevelSpawner board;
 	public List<Tile> firstEvaluationEmptyTiles = new List<Tile>();
 	public List<Tile> secondEvaluationEmptyTiles = new List<Tile>();
 	public List<Vector3> linePoints;
