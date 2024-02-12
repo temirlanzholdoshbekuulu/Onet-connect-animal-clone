@@ -947,7 +947,6 @@ MonoBehaviour:
   emptyTilePrefab: {fileID: 4661586092354329065, guid: 6d77a45d667bff246ace6a87b433472d,
     type: 3}
   checkPairsClass: {fileID: 0}
-  gameManager: {fileID: 1654888772}
   availableTiles: []
   tilesCount: 0
 --- !u!4 &1458085926
@@ -1334,9 +1333,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   remainedTiles: 0
-  level: 1
+  currentLevel: 0
   levelSpawner: {fileID: 1458085925}
-  gameUI: {fileID: 1592951918}
 --- !u!4 &1654888773
 Transform:
   m_ObjectHideFlags: 0

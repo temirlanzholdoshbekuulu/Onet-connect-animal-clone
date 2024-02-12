@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -9,14 +9,13 @@ public class LevelSpawner : MonoBehaviour
 	[SerializeField] Transform[] tilePrefabs;
 	[SerializeField] Transform emptyTilePrefab;
 	[SerializeField] CheckSelectedTiles checkPairsClass;
-	[SerializeField] GameManager gameManager;
 	public Tile[,] tiles;
 	public List<Transform> availableTiles = new List<Transform>();
 	public int tilesCount;
 
 	void Start()
 	{
-		
+		CallSpawnGrid();
 	}
 	void Update() 
 	{
@@ -24,10 +23,11 @@ public class LevelSpawner : MonoBehaviour
 	}
 	public void CallSpawnGrid()
 	{
-		StartCoroutine("SpawnGrid");		
+		StartCoroutine("SpawnGrid");
 	}
-	private IEnumerator SpawnGrid()
+	public IEnumerator SpawnGrid()
 	{
+		GameManager.Instance.remainedTiles = 128;
 		tiles = new Tile[gridWidth, gridHeight];
 		DuplicateTiles();
 		for (int x = 0; x < gridWidth; x++)

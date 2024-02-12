@@ -7,7 +7,7 @@ using UnityEngine.SceneManagement;
 public class GameManager : MonoBehaviour
 {
 	public static GameManager Instance {get;private set;}
-	public int remainedTiles =0;
+	public int remainedTiles;
 	public int currentLevel = 0;
 	public static event Action OnWin;
 	[SerializeField] LevelSpawner levelSpawner;
@@ -24,10 +24,10 @@ public class GameManager : MonoBehaviour
 		{
 			Destroy(gameObject);
 		}
-		levelSpawner.CallSpawnGrid();
 	}
 	public void StartNewLevel()
 	{
+		Debug.Log("Spawning new level");
 		remainedTiles = 128;
 		currentLevel++;
 	}
