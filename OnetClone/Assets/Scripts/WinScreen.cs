@@ -18,6 +18,7 @@ public class WinScreen : MonoBehaviour
 	public void NextLevel()
 	{
 		// gameManager.remainedTiles =128;
+		GameManager.Instance.currentLevel++;
 		SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 		// gameManager.ResetLevel();
 		// levelManager.CallSpawnGrid();

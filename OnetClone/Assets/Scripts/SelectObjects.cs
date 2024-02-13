@@ -12,6 +12,7 @@ public class SelectObjects : MonoBehaviour
     [SerializeField] PopingTile tilePop;
     private GameObject selectedTile1;
     private GameObject selectedTile2;
+    public event Action OnTilesMatch;
     
     void Awake() 
     {
@@ -87,12 +88,11 @@ public class SelectObjects : MonoBehaviour
             }
         }
     }
-    public event Action onTilesMatch;
     public void TilesMatch()
     {
-        if(onTilesMatch != null)
+        if(OnTilesMatch != null)
         {
-            onTilesMatch();
+            OnTilesMatch();
         }
     }
 }

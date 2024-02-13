@@ -9,7 +9,7 @@ public class ScreenShake : MonoBehaviour
 
     void Start()
     {
-        SelectObjects.current.onTilesMatch +=StartShaking;
+        SelectObjects.current.OnTilesMatch +=StartShaking;
     }
 
     void StartShaking()

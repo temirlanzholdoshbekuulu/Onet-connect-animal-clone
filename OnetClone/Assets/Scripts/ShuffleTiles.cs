@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class ShuffleTiles : MonoBehaviour
 {
@@ -8,11 +10,13 @@ public class ShuffleTiles : MonoBehaviour
 	public LevelSpawner board;
 	public List<Tile> tiles = new List<Tile>();
 	public List<Vector2> tilePositions = new List<Vector2>();
-	
+	public TextMeshProUGUI remainedShuffelsText;
+		
 	void Awake()
 	{
 		grid = GameObject.Find("Grid");
 		board = GameObject.Find("Grid").GetComponent<LevelSpawner>();
+		remainedShuffelsText = GameObject.Find("ShuffleNumText").GetComponent<TextMeshProUGUI>();
 	}
 
 	void Update()
@@ -21,9 +25,11 @@ public class ShuffleTiles : MonoBehaviour
 		{
 			Shuffle();
 		}
+		remainedShuffelsText.text = GameManager.Instance.remainedShuffles.ToString();
 	}
-	void Shuffle()
+	public void Shuffle()
 	{
+		GameManager.Instance.remainedShuffles--;
 		foreach(Tile tile in grid.transform.GetComponentsInChildren<Tile>())
 		{
 			if(tile.isEmpty == false)
