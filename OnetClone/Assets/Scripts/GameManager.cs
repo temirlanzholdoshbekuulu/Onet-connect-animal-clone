@@ -37,10 +37,10 @@ public class GameManager : MonoBehaviour
 		{
 			OnWin();
 		}
-		if(Input.GetKey(KeyCode.Space))
-		{
-			remainedTiles = 128;
-			SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-		}
+		// if(Input.GetKey(KeyCode.Space))
+		// {
+		// 	remainedTiles = 128;
+		// 	SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+		// }
 	}
 }
