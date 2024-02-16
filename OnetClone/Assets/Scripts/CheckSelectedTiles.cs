@@ -15,6 +15,7 @@ public class CheckSelectedTiles : MonoBehaviour
 		firstEvaluationEmptyTiles.Clear();
 		secondEvaluationEmptyTiles.Clear();
 		linePoints.Clear();
+		board = FindObjectOfType<LevelSpawner>().GetComponent<LevelSpawner>();
 		
 		if (CheckStraightLine(selectedTile1, selectedTile2, firstEvaluationEmptyTiles, selectedTile2.transform.position)||
 		CheckOneBendLine(selectedTile2, selectedTile1, firstEvaluationEmptyTiles, secondEvaluationEmptyTiles, selectedTile1.transform.position)||

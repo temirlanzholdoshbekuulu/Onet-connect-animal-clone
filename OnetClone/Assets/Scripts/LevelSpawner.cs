@@ -12,7 +12,7 @@ public class LevelSpawner : MonoBehaviour
 	public Tile[,] tiles;
 	public List<Transform> availableTiles = new List<Transform>();
 	public int tilesCount;
-
+	
 	void Start()
 	{
 		CallSpawnGrid();
