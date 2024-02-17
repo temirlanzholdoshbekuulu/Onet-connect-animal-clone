@@ -8,22 +8,31 @@ using TMPro;
 public class GameManager : MonoBehaviour
 {
 	public static GameManager Instance {get;private set;}
-	public enum GameState {Playing,Win,Lose};
+	public enum GameState {Shuffling,Playing,Win,Lose};
 	public GameState gameState{get;set;}
+	public static event Action OnWin;
+	
 	public int remainedTiles;
 	public int remainedShuffles =6;
 	public int currentLevel = 0;
 	public int currentScore =0;
 	private const int MAX_TILES = 128;
-	public static event Action OnWin;
 	[SerializeField] LevelSpawner levelSpawner;
 	[SerializeField] TextMeshProUGUI winScreenScoreText;
+	[SerializeField] Timer timer;
+	public bool levelIsLoaded = false;
 	
+	void OnEnable() 
+	{
+		Timer.OnTimerFinished+=GameOver;
+		SelectObjects.Instance.OnTilesMatch+=AddScore;
+	}
+	void OnDisable() 
+	{
+		Timer.OnTimerFinished-=GameOver;	
+	}
 	void Awake()
 	{
-		gameState = GameState.Playing;
-		SelectObjects.Instance.OnTilesMatch+=AddScore;
-		StartNewLevel();
 		if(Instance==null)
 		{
 			Instance=this;			
@@ -33,29 +42,28 @@ public class GameManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
-	public void StartNewLevel()
+	void Start()
 	{
-		Debug.Log("Spawning new level");
-		remainedTiles = MAX_TILES;
-		currentLevel++;
+		gameState = GameState.Shuffling;
+		
 	}
 	void Update()
 	{
-		if(remainedTiles == 0)
+		if(remainedTiles == 0 && gameState == GameState.Playing)
 		{
 			gameState= GameState.Win;
 		}
-		if(remainedShuffles == 0)
+		if(remainedShuffles <= 0 || timer.remainedTime <= 0)
 		{
 			Debug.Log("Game Over!");
 		}
-		if(remainedShuffles < 0)
-		{
-			remainedShuffles=0;
-		}
 		switch (gameState)
 		{
+			case GameState.Shuffling:
+				StartNewLevel(currentLevel);
+				break;
 			case GameState.Playing:
+				levelIsLoaded=false;
 				break;
 			case GameState.Win:
 				OnWin();
@@ -70,9 +78,26 @@ public class GameManager : MonoBehaviour
 		}
 		
 	}
+	public void StartNewLevel(int level)
+	{
+		if (levelIsLoaded == false)
+		{
+			levelSpawner.CallSpawnGrid();
+			Debug.Log("Spawning new level : " + currentLevel.ToString());
+			remainedTiles = MAX_TILES;
+			currentLevel++;
+			levelIsLoaded = true;
+			gameState = GameState.Playing;
+			timer.ResetTimer();
+		}
+	}
 	public void AddScore()
 	{
 		currentScore+=10;
 		winScreenScoreText.text = currentScore.ToString("D6");
+	}
+	void GameOver()
+	{
+		gameState=GameState.Lose;
 	}
 }

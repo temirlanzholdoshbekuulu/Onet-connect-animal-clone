@@ -11,19 +11,10 @@ public class WinScreen : MonoBehaviour
 	[SerializeField] Timer timer;
 	[SerializeField] GameManager gameManager;
 	
-	void Update()
-	{
-		
-	}
 	public void NextLevel()
 	{
-		// gameManager.remainedTiles =128;
-		GameManager.Instance.currentLevel++;
-		GameManager.Instance.gameState = GameManager.GameState.Playing;
-		// gameManager.ResetLevel();
-		// levelManager.CallSpawnGrid();
-		// timer.ResetTimer();
-		// gameObject.SetActive(false);
-		// Debug.Log("Spawning next level");
+		Debug.Log("Next level");
+		GameManager.Instance.gameState = GameManager.GameState.Shuffling;
+		gameObject.SetActive(false);
 	}
 }

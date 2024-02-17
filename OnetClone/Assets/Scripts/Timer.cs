@@ -1,25 +1,36 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Timer : MonoBehaviour
 {
-	Image image;
+	private const int SECONDS_IN_MINUTE = 60;
 	private int minutesInRound = 10;
+	public float remainedTime;
+	public static event Action OnTimerFinished;
+	private Image image;
+
 	void Awake()
 	{
-		minutesInRound *= 60;
+		minutesInRound *= SECONDS_IN_MINUTE;
 		image = GetComponent<Image>();
 	}
 
 	void Update()
 	{
-		image.fillAmount -=1f / minutesInRound * Time.deltaTime;
-		
+		image.fillAmount -= 1f / minutesInRound * Time.deltaTime;
+		remainedTime = image.fillAmount;
+
+		if (image.fillAmount <= 0)
+		{
+			OnTimerFinished?.Invoke();
+		}
 	}
 	public void ResetTimer()
 	{
 		image.fillAmount = 1f;
 	}
+
 }

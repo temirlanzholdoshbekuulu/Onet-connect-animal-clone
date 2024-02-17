@@ -28,7 +28,7 @@ public class SelectObjects : MonoBehaviour
 	}
 	void Update()
 	{
-		if (Input.GetMouseButtonDown(0))
+		if (Input.GetMouseButtonDown(0) && GameManager.Instance.gameState == GameManager.GameState.Playing)
 		{
 			HandleSelection();
 		}
