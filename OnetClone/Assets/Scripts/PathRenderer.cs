@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Video;
 
-public class MatchingLineRenderer : MonoBehaviour
+public class PathRenderer : MonoBehaviour
 {
 	[SerializeField] private GameObject pointDotPrefab;
 	private LineRenderer lineRenderer;

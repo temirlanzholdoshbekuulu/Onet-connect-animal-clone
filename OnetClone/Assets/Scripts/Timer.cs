@@ -12,6 +12,9 @@ public class Timer : MonoBehaviour
 	public static event Action OnTimerFinished;
 	private Image image;
 
+	void OnEnable()=>GameManager.OnLevelStart+=ResetTimer;
+	void OnDisable()=>GameManager.OnLevelStart-=ResetTimer;
+	
 	void Awake()
 	{
 		minutesInRound *= SECONDS_IN_MINUTE;

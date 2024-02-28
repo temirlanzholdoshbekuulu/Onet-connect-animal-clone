@@ -1,15 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class ScreenShake : MonoBehaviour
 {
+    [Inject]TileSelectionHandler selectObjects;
     [SerializeField] float duration = 0.03f;
     [SerializeField] AnimationCurve curve;
 
     void Start()
     {
-        SelectObjects.Instance.OnTilesMatch +=StartShaking;
+        selectObjects.OnTilesMatch +=StartShaking;
     }
 
     void StartShaking()

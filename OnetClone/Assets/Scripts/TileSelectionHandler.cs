@@ -2,33 +2,22 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class SelectObjects : MonoBehaviour
+public class TileSelectionHandler : MonoBehaviour
 {
-	public static SelectObjects Instance {get; private set;}
+	[Inject] GameManager gameManager;
+	[Inject] TilePathFinder matchingPathFinder;
+	[Inject] Board board;
 	[SerializeField] Transform emptyTile;
-	[SerializeField] CheckSelectedTiles checkSelectedTiles;
-	[SerializeField] LevelSpawner board;
 	[SerializeField] PopingTile tilePop;
 	private GameObject selectedTile1;
 	private GameObject selectedTile2;
 	public event Action OnTilesMatch;
 	
-	void Awake() 
-	{
-		if(Instance ==null)
-		{
-			Instance = this;    
-			DontDestroyOnLoad(gameObject);
-		}
-		else
-		{
-			Destroy(gameObject);
-		}
-	}
 	void Update()
 	{
-		if (Input.GetMouseButtonDown(0) && GameManager.Instance.gameState == GameManager.GameState.Playing)
+		if (Input.GetMouseButtonDown(0) && gameManager.gameState == GameManager.GameState.Playing)
 		{
 			HandleSelection();
 		}
@@ -66,8 +55,8 @@ public class SelectObjects : MonoBehaviour
 			selectedTile2.GetComponent<SpriteRenderer>().material.color -= new Color(0, 0, 0, 0.3f);
 			if(selectedTile1.GetComponent<Tile>().name == selectedTile2.GetComponent<Tile>().name)
 			{
-				// checkSelectedTiles.board = GameObject.FindObjectOfType<LevelSpawner>().GetComponent<LevelSpawner>();
-				if (checkSelectedTiles.CheckMatchingPairs(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == true)
+				matchingPathFinder.renderLine = true;
+				if (matchingPathFinder.IsPathValid(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == true)
 				{
 					GameObject firstTilePop = Instantiate(tilePop.gameObject,selectedTile1.transform.position,Quaternion.identity);
 					firstTilePop.GetComponent<SpriteRenderer>().sprite = selectedTile1.GetComponent<SpriteRenderer>().sprite;
@@ -77,10 +66,10 @@ public class SelectObjects : MonoBehaviour
 					selectedTile2.GetComponent<Tile>().MakeEmpty();
 					selectedTile1 = null;
 					selectedTile2 = null;
-					checkSelectedTiles.board = board;
+					matchingPathFinder.board = board;
 					TilesMatch();
 				}
-				else if(checkSelectedTiles.CheckMatchingPairs(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == false)
+				else if(matchingPathFinder.IsPathValid(selectedTile1.GetComponent<Tile>(), selectedTile2.GetComponent<Tile>()) == false)
 				{
 					selectedTile1.GetComponent<SpriteRenderer>().material.color += new Color(0, 0, 0,0.3f);
 					selectedTile1 = selectedTile2;

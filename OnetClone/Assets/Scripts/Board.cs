@@ -1,26 +1,33 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
 public class Board : MonoBehaviour
 {
-	private const int GRID_HEIGHT = 10;
-	private const int GRID_WIDTH = 18;
-	[SerializeField] LevelSpawner levelSpawner;
+	public int gridHeight = 10;
+	public int gridWidth = 18;
 	public Tile[,] tiles;
+	
+	void OnEnable()=> GameManager.OnWin+=DeleteBorderTiles;
+	void OnDisable()=> GameManager.OnWin-=DeleteBorderTiles;
 	
 	void Start()
 	{
-		SpawnGrid();
+		tiles = new Tile[gridWidth, gridHeight];
 	}
-
-	void Update()
+	
+	public void SetTiles(Tile[,] newTiles)
 	{
-		
+		tiles = newTiles;
 	}
-	public void SpawnGrid()
+	
+	void DeleteBorderTiles()
 	{
-		tiles = levelSpawner.SpawnGrid();
+		foreach (Tile tile in tiles)
+		{
+			Destroy(tile);
+		}
 	}
 
 }

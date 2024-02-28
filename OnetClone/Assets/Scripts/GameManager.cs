@@ -4,48 +4,39 @@ using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
+using Zenject;
 
 public class GameManager : MonoBehaviour
 {
-	public static GameManager Instance {get;private set;}
 	public enum GameState {Shuffling,Playing,Win,Lose};
 	public GameState gameState{get;set;}
 	public static event Action OnWin;
+	public static event Action OnLevelStart;
 	
+	private int currentLevel = 1;
 	public int remainedTiles;
 	public int remainedShuffles =6;
-	public int currentLevel = 0;
 	public int currentScore =0;
 	private const int MAX_TILES = 128;
-	[SerializeField] LevelSpawner levelSpawner;
+	[Inject] TileSelectionHandler selectObjects;
+	[Inject] TileSpawner levelSpawner;
+	[Inject] Timer timer;
 	[SerializeField] TextMeshProUGUI winScreenScoreText;
-	[SerializeField] Timer timer;
 	public bool levelIsLoaded = false;
 	
 	void OnEnable() 
 	{
 		Timer.OnTimerFinished+=GameOver;
-		SelectObjects.Instance.OnTilesMatch+=AddScore;
+		OnLevelStart+=StartNewLevel;
+		selectObjects.OnTilesMatch+=AddScore;
 	}
 	void OnDisable() 
 	{
 		Timer.OnTimerFinished-=GameOver;	
 	}
-	void Awake()
-	{
-		if(Instance==null)
-		{
-			Instance=this;			
-		}
-		else
-		{
-			Destroy(gameObject);
-		}
-	}
 	void Start()
 	{
 		gameState = GameState.Shuffling;
-		
 	}
 	void Update()
 	{
@@ -60,13 +51,13 @@ public class GameManager : MonoBehaviour
 		switch (gameState)
 		{
 			case GameState.Shuffling:
-				StartNewLevel(currentLevel);
+				OnLevelStart?.Invoke();
 				break;
 			case GameState.Playing:
 				levelIsLoaded=false;
 				break;
 			case GameState.Win:
-				OnWin();
+				OnWin?.Invoke();
 				Debug.Log("Win");
 				break;
 			case GameState.Lose:
@@ -78,17 +69,15 @@ public class GameManager : MonoBehaviour
 		}
 		
 	}
-	public void StartNewLevel(int level)
+	public void StartNewLevel()
 	{
 		if (levelIsLoaded == false)
 		{
-			levelSpawner.CallSpawnGrid();
 			Debug.Log("Spawning new level : " + currentLevel.ToString());
 			remainedTiles = MAX_TILES;
 			currentLevel++;
 			levelIsLoaded = true;
 			gameState = GameState.Playing;
-			timer.ResetTimer();
 		}
 	}
 	public void AddScore()

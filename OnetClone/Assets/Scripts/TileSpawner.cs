@@ -1,25 +1,30 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Zenject;
 
-public class LevelSpawner : MonoBehaviour
+public class TileSpawner : MonoBehaviour
 {
 	public int gridHeight;
 	public int gridWidth;
+	[Inject] Board board;
+	[Inject] GameManager gameManager;
 	[SerializeField] Transform[] tilePrefabs;
 	[SerializeField] Transform emptyTilePrefab;
-	[SerializeField] CheckSelectedTiles checkPairsClass;
 	public Tile[,] tiles;
 	public List<Transform> availableTiles = new List<Transform>();
 	public int tilesCount;
 	
-	public void CallSpawnGrid()
+	void OnEnable()=>GameManager.OnLevelStart+=InitiateGridSpawning;
+	void OnDisable()=>GameManager.OnLevelStart-=InitiateGridSpawning;
+	
+	public void InitiateGridSpawning()
 	{
 		StartCoroutine("SpawnGrid");
 	}
 	public IEnumerator SpawnGrid()
 	{
-		GameManager.Instance.remainedTiles = 128;
+		gameManager.remainedTiles = 128;
 		tiles = new Tile[gridWidth, gridHeight];
 		DuplicateTiles();
 		for (int x = 0; x < gridWidth; x++)
@@ -27,9 +32,9 @@ public class LevelSpawner : MonoBehaviour
 			for (int y = 0; y < gridHeight; y++)
 			{
 				tilesCount ++;
-				Tile tile = IsOnBorder(x, y) ? emptyTilePrefab.GetComponent<Tile>() : SelectRandomTile();
-				tiles[x, y] = Instantiate(tile, new Vector3(11, 18, 0), Quaternion.identity, gameObject.transform);
-				if(!IsOnBorder(x,y))
+				Tile tile = IsBorderTile(x, y) ? emptyTilePrefab.GetComponent<Tile>() : SelectRandomTile();
+				tiles[x, y] = Instantiate(tile, new Vector3(11, 18, 0), Quaternion.identity,board.transform);
+				if(!IsBorderTile(x,y))
 				{
 					while(!Mathf.Approximately((tiles[x,y].transform.position - new Vector3(x,y,0)).sqrMagnitude,0))
 					{
@@ -41,9 +46,9 @@ public class LevelSpawner : MonoBehaviour
 				{
 					tiles[x,y].transform.position = new Vector3(x,y,0);
 				}
-
 			}
 		}
+		board.SetTiles(tiles);
 	}
 	void DuplicateTiles()
 	{
@@ -55,7 +60,7 @@ public class LevelSpawner : MonoBehaviour
 			}
 		}
 	}
-	bool IsOnBorder(int x, int y)
+	bool IsBorderTile(int x, int y)
 	{
 		return x == 0 || x == gridWidth-1 || y == 0 || y == gridHeight -1;
 	}

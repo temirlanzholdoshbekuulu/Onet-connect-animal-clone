@@ -4,17 +4,18 @@ using System.Collections.Generic;
 using System.Data.Common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Zenject;
 
 public class WinScreen : MonoBehaviour
 {
-	[SerializeField] LevelSpawner levelManager;
+	[Inject] GameManager gameManager;
+	[SerializeField] TileSpawner levelManager;
 	[SerializeField] Timer timer;
-	[SerializeField] GameManager gameManager;
 	
 	public void NextLevel()
 	{
 		Debug.Log("Next level");
-		GameManager.Instance.gameState = GameManager.GameState.Shuffling;
+		gameManager.gameState = GameManager.GameState.Shuffling;
 		gameObject.SetActive(false);
 	}
 }

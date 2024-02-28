@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class ReshuffleTiles : MonoBehaviour
 {
+	[Inject]GameManager gameManager;
 	public GameObject grid;
-	public LevelSpawner board;
+	public TileSpawner board;
 	public List<Tile> tiles = new List<Tile>();
 	public List<Vector2> tilePositions = new List<Vector2>();
 	public TextMeshProUGUI remainedShuffelsText;
@@ -15,7 +17,7 @@ public class ReshuffleTiles : MonoBehaviour
 	void Awake()
 	{
 		grid = GameObject.Find("Grid");
-		board = GameObject.Find("Grid").GetComponent<LevelSpawner>();
+		board = GameObject.Find("Grid").GetComponent<TileSpawner>();
 		remainedShuffelsText = GameObject.Find("ShuffleNumText").GetComponent<TextMeshProUGUI>();
 	}
 
@@ -25,18 +27,14 @@ public class ReshuffleTiles : MonoBehaviour
 		{
 			Reshuffle();
 		}
-		if (GameManager.Instance != null)
-		{
-			remainedShuffelsText.text = GameManager.Instance.remainedShuffles.ToString();
-		}
-
+		remainedShuffelsText.text = gameManager.remainedShuffles.ToString();
 	}
 	public void Reshuffle()
 	{
 		
-		if (GameManager.Instance.remainedShuffles !=0 && GameManager.Instance.gameState == GameManager.GameState.Playing)
+		if (gameManager.remainedShuffles !=0 && gameManager.gameState == GameManager.GameState.Playing)
 		{
-			GameManager.Instance.remainedShuffles--;
+			gameManager.remainedShuffles--;
 			foreach(Tile tile in grid.transform.GetComponentsInChildren<Tile>())
 			{
 				if(tile.isEmpty == false)

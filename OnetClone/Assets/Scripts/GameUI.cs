@@ -2,9 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using Zenject;
 
 public class GameUI : MonoBehaviour
 {
+	[Inject] GameManager gameManager;
 	[SerializeField] GameObject WinScreen;
 	[SerializeField] TextMeshProUGUI scoreText;
 	
@@ -22,7 +24,7 @@ public class GameUI : MonoBehaviour
 	}
 	void Update()
 	{
-		scoreText.text = GameManager.Instance.currentScore.ToString("D6");
+		scoreText.text = gameManager.currentScore.ToString("D6");
 	}
 	public void ShowWinScreen()
 	{
