@@ -13,7 +13,7 @@ public class TileSelectionHandler : MonoBehaviour
 	[SerializeField] PopingTile tilePop;
 	private GameObject selectedTile1;
 	private GameObject selectedTile2;
-	public event Action OnTilesMatch;
+	public static event Action OnTilesMatch;
 	
 	void Update()
 	{
@@ -87,9 +87,6 @@ public class TileSelectionHandler : MonoBehaviour
 	}
 	public void TilesMatch()
 	{
-		if(OnTilesMatch != null)
-		{
-			OnTilesMatch();
-		}
+		OnTilesMatch?.Invoke();
 	}
 }

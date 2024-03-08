@@ -126,7 +126,7 @@ public class TilePathFinder : MonoBehaviour
 	{
 		if(renderLine)
 		{
-			var lineInstance = Instantiate(Line,Vector3.zero,Quaternion.identity);
+			var lineInstance = Instantiate(Line,new Vector3(0,0,-1),Quaternion.identity);
 			lineInstance.startPoint = startPoint;
 			lineInstance.endPoint = endPoint;
 		}

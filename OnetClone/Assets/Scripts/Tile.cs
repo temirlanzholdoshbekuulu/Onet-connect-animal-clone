@@ -19,9 +19,4 @@ public class Tile : MonoBehaviour
 		GetComponent<SpriteRenderer>().material.color = new Color(0, 0, 0, -0.3f);
 		GetComponent<BoxCollider2D>().enabled = false;
 	}
-	private void Update() 
-	{
-			
-	}
-	
 }

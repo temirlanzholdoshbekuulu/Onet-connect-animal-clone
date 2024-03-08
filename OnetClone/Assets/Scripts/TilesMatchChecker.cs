@@ -1,34 +1,42 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 using Zenject;
 
-public class TileAnalyzer : MonoBehaviour
+public class TilesMatchChecker : MonoBehaviour
 {
 	[Inject] GameManager gameManager;
-	public ReshuffleTiles reshuffleTiles;
-	public TilePathFinder tilePathFinder;
-	public TileSelectionHandler tileSelectionHandler;
-	public Board board;
+	[Inject] Board board;
+	[Inject] TilePathFinder tilePathFinder;
+	[Inject] ReshuffleTiles reshuffleTiles;
+	[SerializeField] TextMeshProUGUI remainedHintsText;
 	private List<Coroutine> pulseCoroutines = new List<Coroutine>();
-	private SpriteRenderer highlightedTile1,highlightedTile2;
+	public SpriteRenderer highlightedTile1,highlightedTile2;
+	public int remainedHints = 9;
+	public bool isTilesReshuffled = false;
 
 	void OnEnable()
 	{
-		tileSelectionHandler.OnTilesMatch += CheckAndReshuffle;
-		tileSelectionHandler.OnTilesMatch += ResetCoroutines;
+		TileSelectionHandler.OnTilesMatch += CheckAndReshuffle;
+		TileSelectionHandler.OnTilesMatch += ResetHighlightCoroutines;
 	}
 	void OnDisable()
 	{
-		tileSelectionHandler.OnTilesMatch -= CheckAndReshuffle;
-		tileSelectionHandler.OnTilesMatch -= ResetCoroutines;
+		TileSelectionHandler.OnTilesMatch -= CheckAndReshuffle;
+		TileSelectionHandler.OnTilesMatch -= ResetHighlightCoroutines;
 	}
-	
-	public void HighlightMatchingTiles()
+	void Start()
 	{
-		if (gameManager.gameState == GameManager.GameState.Playing && gameManager.remainedTiles > 2)
+		remainedHintsText.text = remainedHints.ToString();
+	}
+	public void CheckAndHighlight()
+	{
+		if (gameManager.gameState == GameManager.GameState.Playing && gameManager.remainedTiles > 2 && remainedHints > 0)
 		{
+			remainedHints--;
 			FindAndHighlightPairs(true);
+			remainedHintsText.text = remainedHints.ToString();
 		}
 	}
 
@@ -39,20 +47,19 @@ public class TileAnalyzer : MonoBehaviour
 			if (!FindAndHighlightPairs(false))
 			{
 				reshuffleTiles.Reshuffle();
-				Debug.Log("No matches found");
 				foreach (Coroutine coroutine in pulseCoroutines)
 				{
 					StopCoroutine(coroutine);
 				}
+				Debug.Log("No matches found");
 				pulseCoroutines.Clear();
 			}
 		}
 	}
 
-	private bool FindAndHighlightPairs(bool shouldHighlight)
+	public bool FindAndHighlightPairs(bool shouldHighlight)
 	{
 		tilePathFinder.renderLine = false;
-
 		for (int x = 0; x < board.gridWidth; x++)
 		{
 			for (int y = 0; y < board.gridHeight; y++)
@@ -92,7 +99,7 @@ public class TileAnalyzer : MonoBehaviour
 		return false;
 	}
 	
-	void ResetCoroutines()
+	public void ResetHighlightCoroutines()
 	{
 		foreach (Coroutine coroutine in pulseCoroutines)
 		{
@@ -108,7 +115,7 @@ public class TileAnalyzer : MonoBehaviour
 	
 	IEnumerator PulseColor(SpriteRenderer spriteRenderer)
 	{
-		float duration = 1.5f; // duration of one pulse
+		float duration = 1.5f; 
 		float lerpTime = 5f;
 
 		while (true)

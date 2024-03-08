@@ -5,13 +5,12 @@ using Zenject;
 
 public class ScreenShake : MonoBehaviour
 {
-    [Inject]TileSelectionHandler selectObjects;
     [SerializeField] float duration = 0.03f;
     [SerializeField] AnimationCurve curve;
 
     void Start()
     {
-        selectObjects.OnTilesMatch +=StartShaking;
+        TileSelectionHandler.OnTilesMatch +=StartShaking;
     }
 
     void StartShaking()

@@ -25,7 +25,7 @@ public class PathRenderer : MonoBehaviour
 		lineRenderer.SetPosition(0, startPoint);
 		lineRenderer.SetPosition(1, endPoint);
 
-		Instantiate(pointDotPrefab,startPoint,Quaternion.identity,gameObject.transform);		
-		Instantiate(pointDotPrefab,endPoint,Quaternion.identity,gameObject.transform);		
+		Instantiate(pointDotPrefab,startPoint + new Vector3(0,0,-1),Quaternion.identity,gameObject.transform);		
+		Instantiate(pointDotPrefab,endPoint + new Vector3(0,0,-1),Quaternion.identity,gameObject.transform);		
 	}
 }

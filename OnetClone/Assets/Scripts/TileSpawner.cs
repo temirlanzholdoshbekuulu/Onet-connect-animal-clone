@@ -5,12 +5,12 @@ using Zenject;
 
 public class TileSpawner : MonoBehaviour
 {
-	public int gridHeight;
-	public int gridWidth;
 	[Inject] Board board;
 	[Inject] GameManager gameManager;
 	[SerializeField] Transform[] tilePrefabs;
 	[SerializeField] Transform emptyTilePrefab;
+	public int gridHeight;
+	public int gridWidth;
 	public Tile[,] tiles;
 	public List<Transform> availableTiles = new List<Transform>();
 	public int tilesCount;
@@ -31,25 +31,26 @@ public class TileSpawner : MonoBehaviour
 		{
 			for (int y = 0; y < gridHeight; y++)
 			{
-				tilesCount ++;
+				tilesCount++;
 				Tile tile = IsBorderTile(x, y) ? emptyTilePrefab.GetComponent<Tile>() : SelectRandomTile();
-				tiles[x, y] = Instantiate(tile, new Vector3(11, 18, 0), Quaternion.identity,board.transform);
-				if(!IsBorderTile(x,y))
+				tiles[x, y] = Instantiate(tile, new Vector3(11, 18, 0), Quaternion.identity, board.transform);
+				if (!IsBorderTile(x, y))
 				{
-					while(!Mathf.Approximately((tiles[x,y].transform.position - new Vector3(x,y,0)).sqrMagnitude,0))
+					while (!Mathf.Approximately((tiles[x, y].transform.position - new Vector3(x, y, 0)).sqrMagnitude, 0))
 					{
-						tiles[x,y].transform.position = Vector3.MoveTowards(tiles[x,y].transform.position,new Vector3(x,y,0),1500* Time.deltaTime);
+						tiles[x, y].transform.position = Vector3.MoveTowards(tiles[x, y].transform.position, new Vector3(x, y, 0), 1500 * Time.deltaTime);
 						yield return null;
 					}
 				}
 				else
 				{
-					tiles[x,y].transform.position = new Vector3(x,y,0);
+					tiles[x, y].transform.position = new Vector3(x, y, 0);
 				}
 			}
 		}
 		board.SetTiles(tiles);
 	}
+
 	void DuplicateTiles()
 	{
 		foreach (Transform tilePrefab in tilePrefabs)

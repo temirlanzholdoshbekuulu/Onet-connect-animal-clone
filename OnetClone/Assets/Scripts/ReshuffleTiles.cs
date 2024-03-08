@@ -8,17 +8,16 @@ using Zenject;
 public class ReshuffleTiles : MonoBehaviour
 {
 	[Inject]GameManager gameManager;
-	public GameObject grid;
-	public TileSpawner board;
+	[Inject] TileSpawner tileSpawner;
+	[Inject] TilesMatchChecker availableMathingTilesChecker;
+	[SerializeField] GameObject grid;
+	[SerializeField] TextMeshProUGUI remainedShuffelsText;
 	public List<Tile> tiles = new List<Tile>();
 	public List<Vector2> tilePositions = new List<Vector2>();
-	public TextMeshProUGUI remainedShuffelsText;
 	
 	void Awake()
 	{
 		grid = GameObject.Find("Grid");
-		board = GameObject.Find("Grid").GetComponent<TileSpawner>();
-		remainedShuffelsText = GameObject.Find("ShuffleNumText").GetComponent<TextMeshProUGUI>();
 	}
 
 	void Update()
@@ -31,7 +30,8 @@ public class ReshuffleTiles : MonoBehaviour
 	}
 	public void Reshuffle()
 	{
-		
+		print("reshuffling");
+		availableMathingTilesChecker.ResetHighlightCoroutines();
 		if (gameManager.remainedShuffles !=0 && gameManager.gameState == GameManager.GameState.Playing)
 		{
 			gameManager.remainedShuffles--;
@@ -54,7 +54,7 @@ public class ReshuffleTiles : MonoBehaviour
 	
 				int x = (int)newPosition.x;
 				int y = (int)newPosition.y;
-				board.tiles[x, y] = tile;
+				tileSpawner.tiles[x, y] = tile;
 			}
 		}
 	}

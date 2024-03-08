@@ -577,7 +577,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 0, y: -22}
+  m_AnchoredPosition: {x: 0, y: -30}
   m_SizeDelta: {x: 510, y: 90}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &387398447
@@ -1199,7 +1199,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 90, y: 90}
+  m_SizeDelta: {x: 90, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &720241680
 MonoBehaviour:
@@ -1505,6 +1505,7 @@ GameObject:
   - component: {fileID: 1099187118}
   - component: {fileID: 1099187117}
   - component: {fileID: 1099187120}
+  - component: {fileID: 1099187121}
   m_Layer: 5
   m_Name: HintButton
   m_TagString: Untagged
@@ -1531,7 +1532,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 90}
+  m_SizeDelta: {x: 150, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1099187117
 MonoBehaviour:
@@ -1578,8 +1579,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1099187120}
-        m_TargetAssemblyTypeName: TileAnalyzer, Assembly-CSharp
-        m_MethodName: HighlightMatchingTiles
+        m_TargetAssemblyTypeName: TilesMatchChecker, Assembly-CSharp
+        m_MethodName: CheckAndHighlight
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1639,10 +1640,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b37397014ea0d154f911d67681ca9258, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reshuffleTiles: {fileID: 1502156907}
-  tilePathFinder: {fileID: 519331539}
-  tileSelectionHandler: {fileID: 519420035}
-  board: {fileID: 1458085927}
+  remainedHintsText: {fileID: 759230230}
+  highlightedTile1: {fileID: 0}
+  highlightedTile2: {fileID: 0}
+  remainedHints: 9
+  isTilesReshuffled: 0
+--- !u!114 &1099187121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1099187115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _components:
+  - {fileID: 1099187120}
+  _identifier: 
+  _useSceneContext: 0
+  _context: {fileID: 0}
+  _bindType: 0
 --- !u!1 &1400178063
 GameObject:
   m_ObjectHideFlags: 0
@@ -2016,8 +2036,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ffb8f373c1e2d564fa1b44b7e3ff7f88, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gridHeight: 10
-  gridWidth: 18
   tilePrefabs:
   - {fileID: 3948522456515837954, guid: 06c364099b8ce8a4c91f30cd3cc2f702, type: 3}
   - {fileID: 5410499003837119726, guid: 4b915bab227b7c6478a1f90b159a35af, type: 3}
@@ -2053,6 +2071,8 @@ MonoBehaviour:
   - {fileID: 4661586092354329065, guid: 5f26fe604da53aa45a1a43745022e222, type: 3}
   emptyTilePrefab: {fileID: 4661586092354329065, guid: 6d77a45d667bff246ace6a87b433472d,
     type: 3}
+  gridHeight: 10
+  gridWidth: 18
   availableTiles: []
   tilesCount: 0
 --- !u!4 &1458085926
@@ -2084,6 +2104,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gridHeight: 10
   gridWidth: 18
+  level: 0
+  tilesMatchChecker: {fileID: 1099187120}
 --- !u!114 &1458085928
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2250,6 +2272,7 @@ GameObject:
   - component: {fileID: 1502156909}
   - component: {fileID: 1502156908}
   - component: {fileID: 1502156907}
+  - component: {fileID: 1502156911}
   m_Layer: 5
   m_Name: ShuffleButton
   m_TagString: Untagged
@@ -2276,7 +2299,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 150, y: 90}
+  m_SizeDelta: {x: 150, y: 80}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1502156907
 MonoBehaviour:
@@ -2290,11 +2313,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb5cd137f06154408de5bac0cad26ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  grid: {fileID: 0}
-  board: {fileID: 0}
+  grid: {fileID: 1458085924}
+  remainedShuffelsText: {fileID: 1405885740}
   tiles: []
   tilePositions: []
-  remainedShuffelsText: {fileID: 1405885740}
 --- !u!114 &1502156908
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2389,6 +2411,24 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1502156905}
   m_CullTransparentMesh: 1
+--- !u!114 &1502156911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1502156905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0166d8ff8d905b048b2448179e1f5d11, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _components:
+  - {fileID: 1502156907}
+  _identifier: 
+  _useSceneContext: 0
+  _context: {fileID: 0}
+  _bindType: 0
 --- !u!1 &1580905563
 GameObject:
   m_ObjectHideFlags: 0
@@ -2722,10 +2762,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5de6b39a6b150f947802856d76359ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  winScreenScoreText: {fileID: 478359815}
+  currentLevel: 3
   remainedTiles: 0
   remainedShuffles: 6
   currentScore: 0
-  winScreenScoreText: {fileID: 478359815}
   levelIsLoaded: 0
 --- !u!4 &1654888773
 Transform:
