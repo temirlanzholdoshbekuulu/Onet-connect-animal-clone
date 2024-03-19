@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Zenject;
 
 public class Timer : MonoBehaviour
 {
+	[Inject] GameManager gameManager;
 	private const int SECONDS_IN_MINUTE = 60;
 	private int minutesInRound = 10;
 	public float remainedTime;
@@ -23,12 +25,15 @@ public class Timer : MonoBehaviour
 
 	void Update()
 	{
-		image.fillAmount -= 1f / minutesInRound * Time.deltaTime;
-		remainedTime = image.fillAmount;
-
-		if (image.fillAmount <= 0)
+		if (gameManager.gameState == GameManager.GameState.Playing)
 		{
-			OnTimerFinished?.Invoke();
+			image.fillAmount -= 1f / minutesInRound * Time.deltaTime;
+			remainedTime = image.fillAmount;
+	
+			if (image.fillAmount <= 0)
+			{
+				OnTimerFinished?.Invoke();
+			}
 		}
 	}
 	public void ResetTimer()

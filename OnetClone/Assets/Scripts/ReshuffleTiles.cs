@@ -30,8 +30,6 @@ public class ReshuffleTiles : MonoBehaviour
 	}
 	public void Reshuffle()
 	{
-		print("reshuffling");
-		availableMathingTilesChecker.ResetHighlightCoroutines();
 		if (gameManager.remainedShuffles !=0 && gameManager.gameState == GameManager.GameState.Playing)
 		{
 			gameManager.remainedShuffles--;

@@ -10,6 +10,8 @@ public class CollapseTilesLeft : ICollapseStrategy
 	private Tile[,] tiles;
 	private int gridWidth;
 	private int gridHeight;
+	private int movingTilesCount = 0;
+	public event Action OnTilesMoved;
 
 	public CollapseTilesLeft(MonoBehaviour monoBehaviour, Tile[,] tiles, int gridWidth, int gridHeight)
 	{
@@ -60,6 +62,8 @@ public class CollapseTilesLeft : ICollapseStrategy
 
 	private IEnumerator MoveTileToPosition(Tile tile, Vector3 targetPosition)
 	{
+		movingTilesCount++; // Increment the counter when a tile starts moving
+
 		float duration = 0.2f; // Duration of the movement in seconds
 		Vector3 startPosition = tile.transform.position;
 		float elapsed = 0f;
@@ -72,5 +76,12 @@ public class CollapseTilesLeft : ICollapseStrategy
 		}
 
 		tile.transform.position = targetPosition;
+
+		movingTilesCount--; // Decrement the counter when a tile finishes moving
+
+		if (movingTilesCount == 0) // If no more tiles are moving
+		{
+			OnTilesMoved?.Invoke(); // Invoke the event
+		}
 	}
 }

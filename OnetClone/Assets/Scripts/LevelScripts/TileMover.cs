@@ -4,14 +4,19 @@ using UnityEngine;
 
 public class TileMover
 {
-    private ICollapseStrategy movementStrategy;
+	private ICollapseStrategy movementStrategy;
 
-    public void SetMovementStrategy(ICollapseStrategy strategy)
+	
+	public void SetMovementStrategy(ICollapseStrategy strategy)
+	{
+		this.movementStrategy = strategy;
+	}
+	public ICollapseStrategy GetMovementStrategy()
     {
-        this.movementStrategy = strategy;
+        return this.movementStrategy;
     }
 
-    public void MoveTilesBasedOnLevel()
+	public void MoveTilesBasedOnLevel()
     {
         if (movementStrategy != null)
         {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,59 +6,63 @@ using UnityEngine;
 public class CollapseTilesDown : ICollapseStrategy
 {
 	private MonoBehaviour monoBehaviour;
-    private Tile[,] tiles;
-    private int gridWidth;
-    private int gridHeight;
+	private Tile[,] tiles;
+	private int gridWidth;
+	private int gridHeight;
+	private int movingTilesCount = 0;
+	public event Action OnTilesMoved;
 
-    public CollapseTilesDown(MonoBehaviour monoBehaviour, Tile[,] tiles, int gridWidth, int gridHeight)
-    {
-        this.monoBehaviour = monoBehaviour;
-        this.tiles = tiles;
-        this.gridWidth = gridWidth;
-        this.gridHeight = gridHeight;
-    }
+	public CollapseTilesDown(MonoBehaviour monoBehaviour, Tile[,] tiles, int gridWidth, int gridHeight)
+	{
+		this.monoBehaviour = monoBehaviour;
+		this.tiles = tiles;
+		this.gridWidth = gridWidth;
+		this.gridHeight = gridHeight;
+	}
 
-    public void MoveTiles()
-    {
-        bool hasMoved;
-        do
-        {
-            hasMoved = false;
-            for (int x = 1; x < gridWidth - 1; x++)
-            {
-                for (int y = gridHeight - 2; y >= 1; y--) // Start from the top and go down
-                {
-                    if (tiles[x, y].isEmpty)
-                    {
-                        // Swap this tile with every tile above it
-                        for (int i = y; i < gridHeight - 1; i++)
-                        {
-                            if (!tiles[x, i + 1].isEmpty)
-                            {
-                                // Swap tiles[x, i] and tiles[x, i + 1]
-                                Tile temp = tiles[x, i];
-                                tiles[x, i] = tiles[x, i + 1];
-                                tiles[x, i + 1] = temp;
+	public void MoveTiles()
+	{
+		bool hasMoved;
+		do
+		{
+			hasMoved = false;
+			for (int x = 1; x < gridWidth - 1; x++)
+			{
+				for (int y = gridHeight - 2; y >= 1; y--) // Start from the top and go down
+				{
+					if (tiles[x, y].isEmpty)
+					{
+						// Swap this tile with every tile above it
+						for (int i = y; i < gridHeight - 1; i++)
+						{
+							if (!tiles[x, i + 1].isEmpty)
+							{
+								// Swap tiles[x, i] and tiles[x, i + 1]
+								Tile temp = tiles[x, i];
+								tiles[x, i] = tiles[x, i + 1];
+								tiles[x, i + 1] = temp;
 
-                                // Smoothly move the tile to the new position
-                                monoBehaviour.StartCoroutine(MoveTileToPosition(tiles[x, i], new Vector3(x, i, 0)));
-                                monoBehaviour.StartCoroutine(MoveTileToPosition(tiles[x, i + 1], new Vector3(x, i + 1, 0)));
+								// Smoothly move the tile to the new position
+								monoBehaviour.StartCoroutine(MoveTileToPosition(tiles[x, i], new Vector3(x, i, 0)));
+								monoBehaviour.StartCoroutine(MoveTileToPosition(tiles[x, i + 1], new Vector3(x, i + 1, 0)));
 
-                                hasMoved = true;
-                            }
-                            else
-                            {
-                                break; // Stop if we reach another empty tile
-                            }
-                        }
-                    }
-                }
-            }
-        } while (hasMoved);
-    }
+								hasMoved = true;
+							}
+							else
+							{
+								break; // Stop if we reach another empty tile
+							}
+						}
+					}
+				}
+			}
+		} while (hasMoved);
+	}
 
 	private IEnumerator MoveTileToPosition(Tile tile, Vector3 targetPosition)
 	{
+		movingTilesCount++; // Increment the counter when a tile starts moving
+
 		float duration = 0.2f; // Duration of the movement in seconds
 		Vector3 startPosition = tile.transform.position;
 		float elapsed = 0f;
@@ -70,5 +75,12 @@ public class CollapseTilesDown : ICollapseStrategy
 		}
 
 		tile.transform.position = targetPosition;
+
+		movingTilesCount--; // Decrement the counter when a tile finishes moving
+
+		if (movingTilesCount == 0) // If no more tiles are moving
+		{
+			OnTilesMoved?.Invoke(); // Invoke the event
+		}
 	}
 }

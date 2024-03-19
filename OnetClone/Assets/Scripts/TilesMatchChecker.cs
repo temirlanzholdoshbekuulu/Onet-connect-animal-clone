@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
@@ -14,18 +15,7 @@ public class TilesMatchChecker : MonoBehaviour
 	private List<Coroutine> pulseCoroutines = new List<Coroutine>();
 	public SpriteRenderer highlightedTile1,highlightedTile2;
 	public int remainedHints = 9;
-	public bool isTilesReshuffled = false;
 
-	void OnEnable()
-	{
-		TileSelectionHandler.OnTilesMatch += CheckAndReshuffle;
-		TileSelectionHandler.OnTilesMatch += ResetHighlightCoroutines;
-	}
-	void OnDisable()
-	{
-		TileSelectionHandler.OnTilesMatch -= CheckAndReshuffle;
-		TileSelectionHandler.OnTilesMatch -= ResetHighlightCoroutines;
-	}
 	void Start()
 	{
 		remainedHintsText.text = remainedHints.ToString();
@@ -42,6 +32,7 @@ public class TilesMatchChecker : MonoBehaviour
 
 	public void CheckAndReshuffle()
 	{
+		print("check and reshuffle");
 		if (gameManager.gameState == GameManager.GameState.Playing && gameManager.remainedTiles > 2)
 		{
 			if (!FindAndHighlightPairs(false))
@@ -88,6 +79,7 @@ public class TilesMatchChecker : MonoBehaviour
 								highlightedTile2 = tile2.GetComponent<SpriteRenderer>();
 								pulseCoroutines.Add(StartCoroutine(PulseColor(highlightedTile1)));
 								pulseCoroutines.Add(StartCoroutine(PulseColor(highlightedTile2)));
+							
 							}
 
 							return true;
@@ -118,7 +110,7 @@ public class TilesMatchChecker : MonoBehaviour
 		float duration = 1.5f; 
 		float lerpTime = 5f;
 
-		while (true)
+		while (spriteRenderer != null)
 		{
 			lerpTime += Time.deltaTime;
 			float perc = Mathf.Sin(2 * Mathf.PI * lerpTime / duration) / 2 + 0.5f;
@@ -126,4 +118,5 @@ public class TilesMatchChecker : MonoBehaviour
 			yield return null;
 		}
 	}
+
 }

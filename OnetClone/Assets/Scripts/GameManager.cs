@@ -8,19 +8,22 @@ using Zenject;
 
 public class GameManager : MonoBehaviour
 {
-	public enum GameState {Shuffling,Playing,Win,Lose};
+	public enum GameState {MainMenu,Shuffling,Playing,Win,Lose};
 	public GameState gameState{get;set;}
-	public static event Action OnWin;
 	public static event Action OnLevelStart;
+	public static event Action OnWin;
+	public static event Action OnLose;
 	
 	[Inject] TileSpawner levelSpawner;
 	[Inject] Timer timer;
+	[Inject] Board board;
 	[SerializeField] TextMeshProUGUI winScreenScoreText;
 	public int currentLevel;
 	public int remainedTiles;
-	public int remainedShuffles =6;
+	public int remainedShuffles =MAX_SHUFFLES;
 	public int currentScore =0;
 	private const int MAX_TILES = 128;
+	private const int MAX_SHUFFLES = 6;
 	public bool levelIsLoaded = false;
 	
 	void OnEnable() 
@@ -35,39 +38,62 @@ public class GameManager : MonoBehaviour
 	}
 	void Start()
 	{
-		gameState = GameState.Shuffling;
+		gameState = GameState.MainMenu;
 	}
 	void Update()
 	{
 		if(remainedTiles == 0 && gameState == GameState.Playing)
 		{
-			gameState= GameState.Win;
+			Win();
 		}
-		if(remainedShuffles < 0 || timer.remainedTime <= 0)
+		if(levelIsLoaded == true && (remainedShuffles < 0 || timer.remainedTime <= 0))
 		{
-			Debug.Log("Game Over!");
+			GameOver();
 		}
 		switch (gameState)
 		{
+			case GameState.MainMenu:
+				Debug.Log("Main Menu");
+				break;
 			case GameState.Shuffling:
-				print("shuffling");
-				OnLevelStart?.Invoke();
 				break;
 			case GameState.Playing:
-				levelIsLoaded=false;
 				break;
 			case GameState.Win:
-				OnWin?.Invoke();
-				Debug.Log("Win");
 				break;
 			case GameState.Lose:
-				Debug.Log("Lose");
 				break;
 			default:
 				Debug.Log("Unknown GameState");
 				break;
 		}
 		
+	}
+	void Win()
+	{
+		gameState = GameState.Win;
+		OnWin?.Invoke();
+		if(remainedShuffles < MAX_SHUFFLES)
+		{
+			remainedShuffles++;
+		}
+	}
+	void GameOver()
+	{
+		gameState = GameState.Lose;
+		OnLose?.Invoke();
+		Debug.Log("Game Over!");
+	}
+	void Shuffle()
+	{
+		print("shuffling");
+		OnLevelStart?.Invoke();
+		Play();
+	}
+	void Play()
+	{
+		levelIsLoaded = false;
+		gameState = GameState.Playing;
 	}
 	public void LoadLevel()
 	{
@@ -76,7 +102,18 @@ public class GameManager : MonoBehaviour
 			remainedTiles = MAX_TILES;
 			currentLevel++;
 			levelIsLoaded = true;
-			gameState = GameState.Playing;
+			Shuffle();
+		}
+	}
+	public void StartNewLevel()
+	{
+		if (levelIsLoaded == false)
+		{
+			remainedTiles = MAX_TILES;
+			currentLevel = 0;
+			remainedShuffles = 6;
+			board.ClearBoard();
+			LoadLevel();
 		}
 	}
 	public void AddScore()
@@ -84,8 +121,5 @@ public class GameManager : MonoBehaviour
 		currentScore+=10;
 		winScreenScoreText.text = currentScore.ToString("D6");
 	}
-	void GameOver()
-	{
-		gameState=GameState.Lose;
-	}
+
 }

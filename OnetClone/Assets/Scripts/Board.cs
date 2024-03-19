@@ -32,11 +32,17 @@ public class Board : MonoBehaviour
 		tileMover = new TileMover();
 	}
 	
-	void ClearBoard()
+	public void ClearBoard()
 	{
-		foreach (Tile tile in tiles)
+		if (tiles != null)
 		{
-			Destroy(tile.gameObject);
+			foreach (Tile tile in tiles)
+			{
+				if (tile != null)
+				{
+					Destroy(tile.gameObject);
+				}
+			}
 		}
 		tiles = new Tile[gridWidth, gridHeight];
 	}
@@ -44,28 +50,34 @@ public class Board : MonoBehaviour
 	void MoveTilesBasedOnLevel()
 	{
 		level = gameManager.currentLevel;
+		if (tileMover.GetMovementStrategy() != null)
+		{
+			tileMover.GetMovementStrategy().OnTilesMoved -= tilesMatchChecker.CheckAndReshuffle;
+		}
 		switch (level)
 		{
 			case 1:
+				tileMover.SetMovementStrategy(new DoNotCollapse(this, tiles, gridWidth, gridHeight));
 				break;
 			case 2:
 				tileMover.SetMovementStrategy(new CollapseTilesDown(this, tiles, gridWidth, gridHeight));
-				tileMover.MoveTilesBasedOnLevel();
 				break;
 			case 3:
 				tileMover.SetMovementStrategy(new CollapseTilesUp(this, tiles, gridWidth, gridHeight));
-				tileMover.MoveTilesBasedOnLevel();
 				break;
 			case 4:
 				tileMover.SetMovementStrategy(new CollapseTilesLeft(this, tiles, gridWidth, gridHeight));
-				tileMover.MoveTilesBasedOnLevel();
 				break;
 			case 5:
 				tileMover.SetMovementStrategy(new CollapseTilesRight(this, tiles, gridWidth, gridHeight));
-				tileMover.MoveTilesBasedOnLevel();
 				break;
 			default:
 				break;
+		}
+		if (tileMover.GetMovementStrategy() != null)
+		{
+			tileMover.GetMovementStrategy().OnTilesMoved += tilesMatchChecker.CheckAndReshuffle;
+			tileMover.MoveTilesBasedOnLevel();
 		}
 	}
 	
@@ -80,5 +92,13 @@ public class Board : MonoBehaviour
 		{
 			Destroy(tile);
 		}
+	}
+	public void ResetTiles()
+	{
+		foreach (Tile tile in tiles)
+		{
+			Destroy(tile.gameObject);
+		}
+		tiles = new Tile[gridWidth, gridHeight];
 	}
 }
