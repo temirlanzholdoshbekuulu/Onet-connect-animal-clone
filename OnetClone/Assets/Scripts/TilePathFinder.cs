@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
@@ -8,127 +7,99 @@ public class TilePathFinder : MonoBehaviour
 	[Inject] public Board board;
 	[SerializeField] PathRenderer Line;
 	public bool renderLine;
-	public List<Tile> firstPassEmptyTiles = new List<Tile>();
-	public List<Tile> secondPassEmptyTiles = new List<Tile>();
-	public List<Vector3> linePoints;
-	
 
-	public bool IsPathValid(Tile selectedTile1, Tile selectedTile2)
-	{
-		firstPassEmptyTiles.Clear();
-		secondPassEmptyTiles.Clear();
-		linePoints.Clear();
-		
-		if (CheckStraightLine(selectedTile1, selectedTile2, firstPassEmptyTiles, selectedTile2.transform.position)||
-		CheckOneBendLine(selectedTile2, selectedTile1, firstPassEmptyTiles, secondPassEmptyTiles, selectedTile1.transform.position)||
-		CheckTwoBendsLine(firstPassEmptyTiles, secondPassEmptyTiles,selectedTile1.transform.position,selectedTile2.transform.position))
-		{
-			return true;
-		}
-		else return false;
-	}
-	bool CheckStraightLine(Tile firstTile, Tile secondTile, List<Tile> EmptyTiles, Vector3 secondTilePos)
-	{
-		return 	IsStraightDirectionMatch(firstTile, secondTile, EmptyTiles, 1, 0) ||
-				IsStraightDirectionMatch(firstTile, secondTile, EmptyTiles, -1, 0)||
-				IsStraightDirectionMatch(firstTile, secondTile, EmptyTiles, 0, 1) ||
-				IsStraightDirectionMatch(firstTile, secondTile, EmptyTiles, 0, -1);
-	}
-	bool CheckOneBendLine(Tile firstTile, Tile secondTile, List<Tile> firstList, List<Tile> EmptyTiles, Vector3 firstTilePos)
-	{
-		return 	IsOneBendDirectionMatch(firstTile, secondTile, firstList, EmptyTiles, 1, 0) ||
-				IsOneBendDirectionMatch(firstTile, secondTile, firstList, EmptyTiles, -1, 0)||
-				IsOneBendDirectionMatch(firstTile, secondTile, firstList, EmptyTiles, 0, 1) ||
-				IsOneBendDirectionMatch(firstTile, secondTile, firstList, EmptyTiles, 0, -1);
-	}
-	bool CheckTwoBendsLine(List<Tile> firstList, List<Tile> secondList, Vector3 firstTilePos, Vector3 secondTilePos)
-	{
-		return 	IsTwoBendsDirectionMatch(firstList, secondList, firstTilePos, secondTilePos, 1, 0) ||	
-				IsTwoBendsDirectionMatch(firstList, secondList, firstTilePos, secondTilePos, -1, 0)||
-				IsTwoBendsDirectionMatch(firstList, secondList, firstTilePos, secondTilePos, 0, 1) ||
-				IsTwoBendsDirectionMatch(firstList, secondList, firstTilePos, secondTilePos, 0, -1);
-	}
-	bool IsStraightDirectionMatch(Tile firstTile, Tile secondTile, List<Tile> emptyTilesInPath, int dx, int dy)
-	{
-		int x = (int)firstTile.transform.position.x;
-		int y = (int)firstTile.transform.position.y;
+	// Directions: right, left, up, down
+	private static readonly Vector2Int[] directions = {
+		new Vector2Int(1, 0), new Vector2Int(-1, 0),
+		new Vector2Int(0, 1), new Vector2Int(0, -1)
+	};
 
-		for (int i = x + dx, j = y + dy; i >= 0 && i < board.gridWidth && j >= 0 && j < board.gridHeight; i += dx, j += dy)
+	public bool IsPathValid(Tile start, Tile end)
+	{
+		if (start == end || start.isEmpty || end.isEmpty)
+			return false;
+
+		int width = board.gridWidth;
+		int height = board.gridHeight;
+		var visited = new bool[width, height, 3]; // [x, y, bends]
+		var queue = new Queue<PathNode>();
+		queue.Enqueue(new PathNode(start, null, 0, -1)); // -1: no direction yet
+
+		while (queue.Count > 0)
 		{
-			if (board.tiles[i, j].transform.position.x == secondTile.transform.position.x && board.tiles[i, j].transform.position.y == secondTile.transform.position.y)
+			var node = queue.Dequeue();
+			int x = Mathf.RoundToInt(node.tile.transform.position.x);
+			int y = Mathf.RoundToInt(node.tile.transform.position.y);
+
+			// Bounds check for x, y
+			if (x < 0 || x >= width || y < 0 || y >= height)
+				continue;
+			if (node.bends > 2 || visited[x, y, node.bends])
+				continue;
+			visited[x, y, node.bends] = true;
+
+			if (node.tile == end)
 			{
-				RenderMatchingLine(firstTile.transform.position,secondTile.transform.position);
+				if (renderLine)
+					RenderPath(node);
 				return true;
 			}
-			else if (board.tiles[i, j].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				emptyTilesInPath.Add(board.tiles[i, j]);
-			}
-		}
-		return false;
-	}
 
-	bool IsOneBendDirectionMatch(Tile firstTile, Tile secondTile, List<Tile> firstList, List<Tile> emptyTilesInPath, int dx, int dy)
-	{
-		int x = (int)firstTile.transform.position.x;
-		int y = (int)firstTile.transform.position.y;
+			for (int dir = 0; dir < 4; dir++)
+			{
+				int nx = x + directions[dir].x;
+				int ny = y + directions[dir].y;
+				int newBends = node.direction == -1 || node.direction == dir ? node.bends : node.bends + 1;
 
-		for (int i = x + dx, j = y + dy; i >= 0 && i < board.gridWidth && j >= 0 && j < board.gridHeight; i += dx, j += dy)
-		{
-			if (firstList.Contains(board.tiles[i, j]))
-			{
-				RenderMatchingLine(firstTile.transform.position, board.tiles[i, j].transform.position);
-				RenderMatchingLine(board.tiles[i, j].transform.position, secondTile.transform.position);
-				return true;
-			}
-			else if (board.tiles[i, j].isEmpty != true)
-			{
-				break;
-			}
-			else
-			{
-				emptyTilesInPath.Add(board.tiles[i, j]);
-			}
-		}
-		return false;
-	}
-
-	bool IsTwoBendsDirectionMatch(List<Tile> firstList, List<Tile> secondList, Vector3 firstTilePos, Vector3 secondTilePos, int dx, int dy)
-	{
-		foreach (Tile tile in firstList)
-		{
-			int x = (int)tile.transform.position.x;
-			int y = (int)tile.transform.position.y;
-
-			for (int i = x + dx, j = y + dy; i >= 0 && i < board.gridWidth && j >= 0 && j < board.gridHeight; i += dx, j += dy)
-			{
-				if (secondList.Contains(board.tiles[i, j]))
+				while (nx >= 0 && nx < width && ny >= 0 && ny < height)
 				{
-					RenderMatchingLine(firstTilePos, tile.transform.position);
-					RenderMatchingLine(tile.transform.position, board.tiles[i, j].transform.position);
-					RenderMatchingLine(board.tiles[i, j].transform.position, secondTilePos);
-					return true;
-				}
-				else if (board.tiles[i, j].isEmpty != true)
-				{
-					break;
+					// Defensive: check for null tile
+					Tile nextTile = board.tiles[nx, ny];
+					if (nextTile == null)
+						break;
+					if (nextTile != end && !nextTile.isEmpty)
+						break;
+
+					if (newBends <= 2 && !visited[nx, ny, newBends])
+						queue.Enqueue(new PathNode(nextTile, node, newBends, dir));
+
+					if (nextTile == end)
+						break;
+
+					nx += directions[dir].x;
+					ny += directions[dir].y;
 				}
 			}
 		}
 		return false;
 	}
 
-	void RenderMatchingLine(Vector3 startPoint,Vector3 endPoint)
+	private void RenderPath(PathNode endNode)
 	{
-		if(renderLine)
+		var points = new List<Vector3>();
+		for (var node = endNode; node != null; node = node.prev)
+			points.Add(node.tile.transform.position);
+		points.Reverse();
+		for (int i = 0; i < points.Count - 1; i++)
 		{
-			var lineInstance = Instantiate(Line,new Vector3(0,0,-1),Quaternion.identity);
-			lineInstance.startPoint = startPoint;
-			lineInstance.endPoint = endPoint;
+			var lineInstance = Instantiate(Line, new Vector3(0, 0, -1), Quaternion.identity);
+			lineInstance.startPoint = points[i];
+			lineInstance.endPoint = points[i + 1];
+		}
+	}
+
+	private class PathNode
+	{
+		public Tile tile;
+		public PathNode prev;
+		public int bends;
+		public int direction;
+		public PathNode(Tile tile, PathNode prev, int bends, int direction)
+		{
+			this.tile = tile;
+			this.prev = prev;
+			this.bends = bends;
+			this.direction = direction;
 		}
 	}
 }
