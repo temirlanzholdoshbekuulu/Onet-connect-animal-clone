@@ -88,8 +88,7 @@ public class AudioManager : MonoBehaviour
 	{
 		if (IsMusicOn())
 		{
-			musicSource.clip = gameOverSound;
-			musicSource.Play();
+			musicSource.PlayOneShot(gameOverSound);
 		}
 	}
 
