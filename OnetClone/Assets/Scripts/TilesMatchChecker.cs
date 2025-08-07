@@ -15,6 +15,7 @@ public class TilesMatchChecker : MonoBehaviour
 	private List<Coroutine> pulseCoroutines = new List<Coroutine>();
 	public SpriteRenderer highlightedTile1,highlightedTile2;
 	public int remainedHints = 9;
+	public AudioManager audioManager;
 
 	void Start()
 	{
@@ -22,16 +23,25 @@ public class TilesMatchChecker : MonoBehaviour
 	}
 	public void CheckAndHighlight()
 	{
+		if (board == null) return;
 		if (gameManager.gameState == GameManager.GameState.Playing && gameManager.remainedTiles > 2 && remainedHints > 0)
 		{
 			remainedHints--;
-			FindAndHighlightPairs(true);
+			if (FindAndHighlightPairs(true))
+			{
+				audioManager.PlayButtonSound();
+			}
+			else
+			{
+				//TODO: Play Rejected Sound
+			}
 			remainedHintsText.text = remainedHints.ToString();
 		}
 	}
 
 	public void CheckAndReshuffle()
 	{
+		if (board == null) return;
 		print("check and reshuffle");
 		if (gameManager.gameState == GameManager.GameState.Playing && gameManager.remainedTiles > 2)
 		{
