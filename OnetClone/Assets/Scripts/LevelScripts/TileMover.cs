@@ -16,11 +16,11 @@ public class TileMover
         return this.movementStrategy;
     }
 
-	public void MoveTilesBasedOnLevel()
+	public IEnumerator MoveTilesBasedOnLevel()
     {
         if (movementStrategy != null)
         {
-            movementStrategy.MoveTiles();
+            yield return movementStrategy.MoveTiles();
         }
     }
 }

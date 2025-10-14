@@ -17,6 +17,7 @@ public class GameManager : MonoBehaviour
 	[Inject] TileSpawner levelSpawner;
 	[Inject] Timer timer;
 	[Inject] Board board;
+	[Inject] TilesMatchChecker tilesMatchChecker;
 	[SerializeField] TextMeshProUGUI winScreenScoreText;
 	public int currentLevel;
 	public int remainedTiles;
@@ -78,7 +79,7 @@ public class GameManager : MonoBehaviour
 			remainedShuffles++;
 		}
 	}
-	void GameOver()
+	public void GameOver()
 	{
 		gameState = GameState.Lose;
 		OnLose?.Invoke();
@@ -110,6 +111,7 @@ public class GameManager : MonoBehaviour
 		if (levelIsLoaded == false)
 		{
 			remainedTiles = MAX_TILES;
+			tilesMatchChecker.ResetHints();
 			currentLevel = 0;
 			remainedShuffles = 6;
 			board.ClearBoard();

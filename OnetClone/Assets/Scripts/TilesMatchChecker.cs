@@ -16,6 +16,12 @@ public class TilesMatchChecker : MonoBehaviour
 	public SpriteRenderer highlightedTile1,highlightedTile2;
 	public int remainedHints = 9;
 
+	public void ResetHints()
+	{
+		remainedHints = 9;
+		remainedHintsText.text = remainedHints.ToString();
+	}
+
 	void Start()
 	{
 		remainedHintsText.text = remainedHints.ToString();
@@ -25,19 +31,25 @@ public class TilesMatchChecker : MonoBehaviour
 		if (gameManager.gameState == GameManager.GameState.Playing && gameManager.remainedTiles > 2 && remainedHints > 0)
 		{
 			remainedHints--;
-			FindAndHighlightPairs(true);
+			FindAndHighlightPairs(true, Color.gray); // Hint uses gray
 			remainedHintsText.text = remainedHints.ToString();
 		}
 	}
 
-	public void CheckAndReshuffle()
+	public IEnumerator CheckAndReshuffle()
 	{
+		yield return new WaitForEndOfFrame();
 		print("check and reshuffle");
 		if (gameManager.gameState == GameManager.GameState.Playing && gameManager.remainedTiles > 2)
 		{
-			if (!FindAndHighlightPairs(false))
+			// Temporarily disabled red highlighting
+			if (!FindAndHighlightPairs(false)) // Was: FindAndHighlightPairs(true, Color.red)
 			{
-				reshuffleTiles.Reshuffle();
+				if (!reshuffleTiles.Reshuffle())
+				{
+					gameManager.GameOver();
+				}
+				
 				foreach (Coroutine coroutine in pulseCoroutines)
 				{
 					StopCoroutine(coroutine);
@@ -48,8 +60,14 @@ public class TilesMatchChecker : MonoBehaviour
 		}
 	}
 
-	public bool FindAndHighlightPairs(bool shouldHighlight)
+	public bool HasAnyMatch()
 	{
+		return FindAndHighlightPairs(false); // No highlight, no color needed
+	}
+
+	public bool FindAndHighlightPairs(bool shouldHighlight, Color? highlightColor = null)
+	{
+		ResetHighlightCoroutines();
 		tilePathFinder.renderLine = false;
 		for (int x = 0; x < board.gridWidth; x++)
 		{
@@ -77,8 +95,10 @@ public class TilesMatchChecker : MonoBehaviour
 							{
 								highlightedTile1 = tile1.GetComponent<SpriteRenderer>();
 								highlightedTile2 = tile2.GetComponent<SpriteRenderer>();
-								pulseCoroutines.Add(StartCoroutine(PulseColor(highlightedTile1)));
-								pulseCoroutines.Add(StartCoroutine(PulseColor(highlightedTile2)));
+								// Use the provided color, or default to gray
+								Color colorForPulse = highlightColor ?? Color.gray;
+								pulseCoroutines.Add(StartCoroutine(PulseColor(highlightedTile1, colorForPulse)));
+								pulseCoroutines.Add(StartCoroutine(PulseColor(highlightedTile2, colorForPulse)));
 							
 							}
 
@@ -105,7 +125,7 @@ public class TilesMatchChecker : MonoBehaviour
 		}
 	}
 	
-	IEnumerator PulseColor(SpriteRenderer spriteRenderer)
+	IEnumerator PulseColor(SpriteRenderer spriteRenderer, Color baseColor)
 	{
 		float duration = 1.5f; 
 		float lerpTime = 5f;
@@ -114,7 +134,7 @@ public class TilesMatchChecker : MonoBehaviour
 		{
 			lerpTime += Time.deltaTime;
 			float perc = Mathf.Sin(2 * Mathf.PI * lerpTime / duration) / 2 + 0.5f;
-			spriteRenderer.color = Color.Lerp(Color.gray, Color.white, perc);
+			spriteRenderer.color = Color.Lerp(baseColor, Color.white, perc);
 			yield return null;
 		}
 	}

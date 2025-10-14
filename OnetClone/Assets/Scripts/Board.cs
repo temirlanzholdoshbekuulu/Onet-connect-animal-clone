@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Zenject;
+using System;
 
 public class Board : MonoBehaviour
 {
@@ -49,11 +50,13 @@ public class Board : MonoBehaviour
 	
 	void MoveTilesBasedOnLevel()
 	{
+		StartCoroutine(MoveTilesAndCheckBoard());
+	}
+
+	IEnumerator MoveTilesAndCheckBoard()
+	{
 		level = gameManager.currentLevel;
-		if (tileMover.GetMovementStrategy() != null)
-		{
-			tileMover.GetMovementStrategy().OnTilesMoved -= tilesMatchChecker.CheckAndReshuffle;
-		}
+		
 		switch (level)
 		{
 			case 1:
@@ -66,18 +69,35 @@ public class Board : MonoBehaviour
 				tileMover.SetMovementStrategy(new CollapseTilesUp(this, tiles, gridWidth, gridHeight));
 				break;
 			case 4:
-				tileMover.SetMovementStrategy(new CollapseTilesLeft(this, tiles, gridWidth, gridHeight));
+				tileMover.SetMovementStrategy(new CollapseTilesAlternateColumns(this, tiles, gridWidth, gridHeight));
 				break;
 			case 5:
+				tileMover.SetMovementStrategy(new CollapseTilesLeft(this, tiles, gridWidth, gridHeight));
+				break;
+			case 6:
 				tileMover.SetMovementStrategy(new CollapseTilesRight(this, tiles, gridWidth, gridHeight));
 				break;
-			default:
+			case 7:
+				tileMover.SetMovementStrategy(new CollapseTilesAlternateRows(this, tiles, gridWidth, gridHeight));
 				break;
+			case 8:
+				tileMover.SetMovementStrategy(new CollapseTilesFromCenter(this, tiles, gridWidth, gridHeight));
+				break;
+			case 9:
+				tileMover.SetMovementStrategy(new CollapseTilesToCenter(this, tiles, gridWidth, gridHeight));
+				break;
+			default:
+				yield return StartCoroutine(tilesMatchChecker.CheckAndReshuffle());
+				yield break;
 		}
+
 		if (tileMover.GetMovementStrategy() != null)
 		{
-			tileMover.GetMovementStrategy().OnTilesMoved += tilesMatchChecker.CheckAndReshuffle;
-			tileMover.MoveTilesBasedOnLevel();
+			// Wait for movement to complete
+			yield return StartCoroutine(tileMover.GetMovementStrategy().MoveTiles());
+			
+			// After movement is complete, check the board
+			yield return StartCoroutine(tilesMatchChecker.CheckAndReshuffle());
 		}
 	}
 	

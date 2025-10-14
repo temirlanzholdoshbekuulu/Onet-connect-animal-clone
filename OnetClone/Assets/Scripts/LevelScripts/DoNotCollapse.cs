@@ -9,8 +9,6 @@ public class DoNotCollapse : ICollapseStrategy
 	private Tile[,] tiles;
 	private int gridWidth;
 	private int gridHeight;
-	public event Action OnTilesMoved;
-
 	public DoNotCollapse(MonoBehaviour monoBehaviour, Tile[,] tiles, int gridWidth, int gridHeight)
 	{
 		this.monoBehaviour = monoBehaviour;
@@ -18,8 +16,10 @@ public class DoNotCollapse : ICollapseStrategy
 		this.gridWidth = gridWidth;
 		this.gridHeight = gridHeight;
 	}
-	public void MoveTiles()
+
+	public IEnumerator MoveTiles()
 	{
-		OnTilesMoved?.Invoke();
+		// No movement needed, just return immediately
+		yield return null;
 	}
 }

@@ -10,8 +10,7 @@ public class CollapseTilesLeft : ICollapseStrategy
 	private Tile[,] tiles;
 	private int gridWidth;
 	private int gridHeight;
-	private int movingTilesCount = 0;
-	public event Action OnTilesMoved;
+	private List<Coroutine> activeMovements = new List<Coroutine>();
 
 	public CollapseTilesLeft(MonoBehaviour monoBehaviour, Tile[,] tiles, int gridWidth, int gridHeight)
 	{
@@ -21,12 +20,14 @@ public class CollapseTilesLeft : ICollapseStrategy
 		this.gridHeight = gridHeight;
 	}
 
-	public void MoveTiles()
+	public IEnumerator MoveTiles()
 	{
 		bool hasMoved;
 		do
 		{
 			hasMoved = false;
+			activeMovements.Clear();
+
 			for (int x = gridWidth - 1; x >= 1; x--) // Start from the rightmost column and go left
 			{
 				for (int y = 1; y < gridHeight - 1; y++)
@@ -43,9 +44,9 @@ public class CollapseTilesLeft : ICollapseStrategy
 								tiles[i, y] = tiles[i + 1, y];
 								tiles[i + 1, y] = temp;
 
-								// Smoothly move the tile to the new position
-								monoBehaviour.StartCoroutine(MoveTileToPosition(tiles[i, y], new Vector3(i, y, 0)));
-								monoBehaviour.StartCoroutine(MoveTileToPosition(tiles[i + 1, y], new Vector3(i + 1, y, 0)));
+								// Start movement coroutines and track them
+								activeMovements.Add(monoBehaviour.StartCoroutine(MoveTileToPosition(tiles[i, y], new Vector3(i, y, 0))));
+								activeMovements.Add(monoBehaviour.StartCoroutine(MoveTileToPosition(tiles[i + 1, y], new Vector3(i + 1, y, 0))));
 
 								hasMoved = true;
 							}
@@ -57,13 +58,21 @@ public class CollapseTilesLeft : ICollapseStrategy
 					}
 				}
 			}
+
+			// Wait for all current movements to complete
+			foreach (var movement in activeMovements)
+			{
+				yield return movement;
+			}
+
 		} while (hasMoved);
+
+		// Add a small delay to ensure everything is settled
+		yield return new WaitForEndOfFrame();
 	}
 
 	private IEnumerator MoveTileToPosition(Tile tile, Vector3 targetPosition)
 	{
-		movingTilesCount++; // Increment the counter when a tile starts moving
-
 		float duration = 0.2f; // Duration of the movement in seconds
 		Vector3 startPosition = tile.transform.position;
 		float elapsed = 0f;
@@ -76,12 +85,5 @@ public class CollapseTilesLeft : ICollapseStrategy
 		}
 
 		tile.transform.position = targetPosition;
-
-		movingTilesCount--; // Decrement the counter when a tile finishes moving
-
-		if (movingTilesCount == 0) // If no more tiles are moving
-		{
-			OnTilesMoved?.Invoke(); // Invoke the event
-		}
 	}
 }

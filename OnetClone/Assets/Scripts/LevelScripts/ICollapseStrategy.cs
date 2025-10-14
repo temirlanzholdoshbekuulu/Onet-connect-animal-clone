@@ -5,6 +5,5 @@ using UnityEngine;
 
 public interface ICollapseStrategy
 {
-	event Action OnTilesMoved;
-	void MoveTiles();
+	IEnumerator MoveTiles();
 }
