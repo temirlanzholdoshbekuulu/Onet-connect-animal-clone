@@ -54,52 +54,53 @@ public class Board : MonoBehaviour
 	}
 
 	IEnumerator MoveTilesAndCheckBoard()
-	{
-		level = gameManager.currentLevel;
-		
-		switch (level)
-		{
-			case 1:
-				tileMover.SetMovementStrategy(new DoNotCollapse(this, tiles, gridWidth, gridHeight));
-				break;
-			case 2:
-				tileMover.SetMovementStrategy(new CollapseTilesDown(this, tiles, gridWidth, gridHeight));
-				break;
-			case 3:
-				tileMover.SetMovementStrategy(new CollapseTilesUp(this, tiles, gridWidth, gridHeight));
-				break;
-			case 4:
-				tileMover.SetMovementStrategy(new CollapseTilesAlternateColumns(this, tiles, gridWidth, gridHeight));
-				break;
-			case 5:
-				tileMover.SetMovementStrategy(new CollapseTilesLeft(this, tiles, gridWidth, gridHeight));
-				break;
-			case 6:
-				tileMover.SetMovementStrategy(new CollapseTilesRight(this, tiles, gridWidth, gridHeight));
-				break;
-			case 7:
-				tileMover.SetMovementStrategy(new CollapseTilesAlternateRows(this, tiles, gridWidth, gridHeight));
-				break;
-			case 8:
-				tileMover.SetMovementStrategy(new CollapseTilesFromCenter(this, tiles, gridWidth, gridHeight));
-				break;
-			case 9:
-				tileMover.SetMovementStrategy(new CollapseTilesToCenter(this, tiles, gridWidth, gridHeight));
-				break;
-			default:
-				yield return StartCoroutine(tilesMatchChecker.CheckAndReshuffle());
-				yield break;
-		}
+{
+	level = gameManager.currentLevel;
 
-		if (tileMover.GetMovementStrategy() != null)
-		{
-			// Wait for movement to complete
-			yield return StartCoroutine(tileMover.GetMovementStrategy().MoveTiles());
-			
-			// After movement is complete, check the board
+	// Make the collapse pattern loop after level 10, starting again from level 2
+	int patternLevel = ((level - 2) % 9) + 2; // loops 2–10
+
+	switch (patternLevel)
+	{
+		case 2:
+			tileMover.SetMovementStrategy(new CollapseTilesDown(this, tiles, gridWidth, gridHeight));
+			break;
+		case 3:
+			tileMover.SetMovementStrategy(new CollapseTilesUp(this, tiles, gridWidth, gridHeight));
+			break;
+		case 4:
+			tileMover.SetMovementStrategy(new CollapseTilesAlternateColumns(this, tiles, gridWidth, gridHeight));
+			break;
+		case 5:
+			tileMover.SetMovementStrategy(new CollapseTilesLeft(this, tiles, gridWidth, gridHeight));
+			break;
+		case 6:
+			tileMover.SetMovementStrategy(new CollapseTilesRight(this, tiles, gridWidth, gridHeight));
+			break;
+		case 7:
+			tileMover.SetMovementStrategy(new CollapseTilesAlternateRows(this, tiles, gridWidth, gridHeight));
+			break;
+		case 8:
+			tileMover.SetMovementStrategy(new CollapseTilesFromCenter(this, tiles, gridWidth, gridHeight));
+			break;
+		case 9:
+			tileMover.SetMovementStrategy(new CollapseTilesToCenter(this, tiles, gridWidth, gridHeight));
+			break;
+		case 10:
+			tileMover.SetMovementStrategy(new CollapseTilesHalfRowsSides(this, tiles, gridWidth, gridHeight));
+			break;
+		default:
 			yield return StartCoroutine(tilesMatchChecker.CheckAndReshuffle());
-		}
+			yield break;
 	}
+
+	if (tileMover.GetMovementStrategy() != null)
+	{
+		yield return StartCoroutine(tileMover.GetMovementStrategy().MoveTiles());
+		yield return StartCoroutine(tilesMatchChecker.CheckAndReshuffle());
+	}
+}
+
 	
 	public void SetTiles(Tile[,] newTiles)
 	{
