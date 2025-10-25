@@ -1,103 +1,103 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.Cryptography;
 using UnityEngine;
 
 public class AudioManager : MonoBehaviour
 {
-	public static AudioManager Instance { get; private set; }
+    public static AudioManager Instance { get; private set; }
 
-	[SerializeField] AudioClip buttonSound;
-	[SerializeField] AudioClip matchSound;
-	[SerializeField] AudioClip backgroundMusic;
-	[SerializeField] AudioClip levelCompleteSound;
-	[SerializeField] AudioClip gameOverSound;
-	private AudioSource soundEffectsSource;
-	private AudioSource musicSource;
+    [SerializeField] AudioClip buttonSound;
+    [SerializeField] AudioClip matchSound;
+    [SerializeField] AudioClip selectTileSound;
+    [SerializeField] AudioClip backgroundMusic;
+    [SerializeField] AudioClip levelCompleteSound;
+    [SerializeField] AudioClip gameOverSound;
+    public void PlaySelectTileSound()
+    {
+        if (selectTileSound != null && IsSoundOn())
+            soundEffectsSource.PlayOneShot(selectTileSound);
+    }
 
-	public delegate void SoundStateChanged(bool isSoundOn);
-	public static event SoundStateChanged OnSoundStateChanged;
+    private AudioSource soundEffectsSource;
+    private AudioSource musicSource;
 
-	public delegate void MusicStateChanged(bool isMusicOn);
-	public static event MusicStateChanged OnMusicStateChanged;
+    public delegate void SoundStateChanged(bool isSoundOn);
+    public static event SoundStateChanged OnSoundStateChanged;
 
-	void Awake()
-	{
-		if (Instance == null)
-		{
-			Instance = this;
-		}
-		
-		else
-		{
-			Destroy(gameObject);
-		}
-		AudioSource[] sources = GetComponents<AudioSource>();
-		soundEffectsSource = sources[0];
-		musicSource = sources[1];
+    public delegate void MusicStateChanged(bool isMusicOn);
+    public static event MusicStateChanged OnMusicStateChanged;
 
-		TileSelectionHandler.OnTilesMatch += PlayMatchSound;
-		GameManager.OnWin+=PlayLevelCompleteSound;
-		GameManager.OnLose+=PlayGameOverSound;
-	}
+    void Awake()
+    {
+        if (Instance == null)
+            Instance = this;
+        else
+            Destroy(gameObject);
 
-	public void SetSound(bool isSoundOn)
-	{
-		soundEffectsSource.mute = !isSoundOn;
-		OnSoundStateChanged?.Invoke(isSoundOn);
-	}
+        AudioSource[] sources = GetComponents<AudioSource>();
+        soundEffectsSource = sources[0];
+        musicSource = sources[1];
 
-	public bool IsSoundOn()
-	{
-		return !soundEffectsSource.mute;
-	}
+        TileSelectionHandler.OnTilesMatch += PlayMatchSound;
+        GameManager.OnWin += PlayLevelCompleteSound;
+        GameManager.OnLose += PlayGameOverSound;
+    }
 
-	public void SetMusic(bool isMusicOn)
-	{
-		musicSource.mute = !isMusicOn;
-		OnMusicStateChanged?.Invoke(isMusicOn);
-	}
+    public void SetSound(bool isSoundOn)
+    {
+        soundEffectsSource.mute = !isSoundOn;
+        OnSoundStateChanged?.Invoke(isSoundOn);
+    }
 
-	public bool IsMusicOn()
-	{
-		return !musicSource.mute;
-	}
+    public bool IsSoundOn()
+    {
+        return !soundEffectsSource.mute;
+    }
 
-	public void PlayButtonSound()
-	{
-		soundEffectsSource.clip = buttonSound;
-		soundEffectsSource.Play();
-	}
+    public void SetMusic(bool isMusicOn)
+    {
+        musicSource.mute = !isMusicOn;
+        OnMusicStateChanged?.Invoke(isMusicOn);
+    }
 
-	public void PlayMatchSound()
-	{
-		soundEffectsSource.clip = matchSound;
-		soundEffectsSource.Play();
-	}
+    public bool IsMusicOn()
+    {
+        return !musicSource.mute;
+    }
 
-	public void PlayLevelCompleteSound()
-	{
-		if (IsMusicOn())
-		{
-			musicSource.clip = levelCompleteSound;
-			musicSource.Play();
-		}
-	}
+    public void PlayButtonSound()
+    {
+        soundEffectsSource.PlayOneShot(buttonSound);
+    }
 
-	public void PlayGameOverSound()
-	{
-		if (IsMusicOn())
-		{
-			musicSource.clip = gameOverSound;
-			musicSource.Play();
-		}
-	}
+    public void PlayMatchSound()
+    {
+        soundEffectsSource.PlayOneShot(matchSound);
+    }
 
-	public void PlayBackgroundMusic()
-	{
-		musicSource.clip = backgroundMusic;
-		musicSource.Play();
-	}
+    public void PlayLevelCompleteSound()
+    {
+        if (IsSoundOn())
+        {
+            soundEffectsSource.PlayOneShot(levelCompleteSound);
+        }
+    }
+
+    public void PlayGameOverSound()
+    {
+        if (IsSoundOn())
+        {
+            soundEffectsSource.PlayOneShot(gameOverSound);
+        }
+    }
+
+    public void PlayBackgroundMusic()
+    {
+        if (IsMusicOn())
+        {
+            musicSource.clip = backgroundMusic;
+            musicSource.loop = true;
+            musicSource.Play();
+        }
+    }
 }
-
-

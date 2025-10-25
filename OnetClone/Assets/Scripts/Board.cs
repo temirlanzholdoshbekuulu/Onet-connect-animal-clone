@@ -63,31 +63,31 @@ public class Board : MonoBehaviour
 	switch (patternLevel)
 	{
 		case 2:
-			tileMover.SetMovementStrategy(new CollapseTilesDown(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new Down(this, tiles, gridWidth, gridHeight));
 			break;
 		case 3:
-			tileMover.SetMovementStrategy(new CollapseTilesUp(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new Up(this, tiles, gridWidth, gridHeight));
 			break;
 		case 4:
-			tileMover.SetMovementStrategy(new CollapseTilesAlternateColumns(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new AlternateColumns(this, tiles, gridWidth, gridHeight));
 			break;
 		case 5:
-			tileMover.SetMovementStrategy(new CollapseTilesLeft(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new Left(this, tiles, gridWidth, gridHeight));
 			break;
 		case 6:
-			tileMover.SetMovementStrategy(new CollapseTilesRight(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new Right(this, tiles, gridWidth, gridHeight));
 			break;
 		case 7:
-			tileMover.SetMovementStrategy(new CollapseTilesAlternateRows(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new AlternateRows(this, tiles, gridWidth, gridHeight));
 			break;
 		case 8:
-			tileMover.SetMovementStrategy(new CollapseTilesFromCenter(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new FromCenter(this, tiles, gridWidth, gridHeight));
 			break;
 		case 9:
-			tileMover.SetMovementStrategy(new CollapseTilesToCenter(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new Center(this, tiles, gridWidth, gridHeight));
 			break;
 		case 10:
-			tileMover.SetMovementStrategy(new CollapseTilesHalfRowsSides(this, tiles, gridWidth, gridHeight));
+			tileMover.SetMovementStrategy(new HalfRowsSides(this, tiles, gridWidth, gridHeight));
 			break;
 		default:
 			yield return StartCoroutine(tilesMatchChecker.CheckAndReshuffle());
