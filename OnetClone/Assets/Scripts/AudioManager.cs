@@ -12,14 +12,11 @@ public class AudioManager : MonoBehaviour
     [SerializeField] AudioClip backgroundMusic;
     [SerializeField] AudioClip levelCompleteSound;
     [SerializeField] AudioClip gameOverSound;
-    public void PlaySelectTileSound()
-    {
-        if (selectTileSound != null && IsSoundOn())
-            soundEffectsSource.PlayOneShot(selectTileSound);
-    }
 
     private AudioSource soundEffectsSource;
     private AudioSource musicSource;
+
+    private bool suppressSelectSound = false;
 
     public delegate void SoundStateChanged(bool isSoundOn);
     public static event SoundStateChanged OnSoundStateChanged;
@@ -70,9 +67,23 @@ public class AudioManager : MonoBehaviour
         soundEffectsSource.PlayOneShot(buttonSound);
     }
 
+    public void PlaySelectTileSound()
+    {
+        if (selectTileSound != null && IsSoundOn() && !suppressSelectSound)
+            soundEffectsSource.PlayOneShot(selectTileSound);
+    }
+
     public void PlayMatchSound()
     {
+        suppressSelectSound = true;
         soundEffectsSource.PlayOneShot(matchSound);
+        StartCoroutine(ResetSuppressFlag());
+    }
+
+    private IEnumerator ResetSuppressFlag()
+    {
+        yield return null; // Wait one frame
+        suppressSelectSound = false;
     }
 
     public void PlayLevelCompleteSound()

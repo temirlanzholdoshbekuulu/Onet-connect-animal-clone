@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using TMPro;
 using Zenject;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class GameManager : MonoBehaviour
 {
@@ -19,6 +20,8 @@ public class GameManager : MonoBehaviour
 	[Inject] Board board;
 	[Inject] TilesMatchChecker tilesMatchChecker;
 	[SerializeField] TextMeshProUGUI winScreenScoreText;
+	[SerializeField] TextMeshProUGUI gameOverScreenScoreText;
+	public TextMeshProUGUI newRecordText;
 	public int currentLevel;
 	public int remainedTiles;
 	public int remainedShuffles = MAX_SHUFFLES;
@@ -139,6 +142,7 @@ public class GameManager : MonoBehaviour
 	{
 		currentScore += 10;
 		winScreenScoreText.text = currentScore.ToString("D6");
+		gameOverScreenScoreText.text = currentScore.ToString("D6");
 		SaveSession();
 	}
 
@@ -189,7 +193,14 @@ public class GameManager : MonoBehaviour
 			highScore = currentScore;
 			PlayerPrefs.SetInt(HighScoreKey, highScore);
 			PlayerPrefs.Save();
-			// Optionally: Show new record UI
+
+			if (newRecordText != null)
+				newRecordText.gameObject.SetActive(true); // Show "New record" text
+		}
+		else
+		{
+			if (newRecordText != null)
+				newRecordText.gameObject.SetActive(false); // Hide it otherwise
 		}
 	}
 
